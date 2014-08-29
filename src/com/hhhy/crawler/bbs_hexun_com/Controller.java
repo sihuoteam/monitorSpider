@@ -1,18 +1,20 @@
 package com.hhhy.crawler.bbs_hexun_com;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import com.hhhy.crawler.*;
+import com.hhhy.crawler.CtrController;
+import com.hhhy.crawler.Page;
+import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.util.DateFormatUtils;
+import com.hhhy.crawler.util.GetHTML;
+import com.hhhy.db.beans.Article;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.hhhy.crawler.util.FormatTime;
-import com.hhhy.crawler.util.GetHTML;
-import com.hhhy.db.beans.Article;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +25,7 @@ import com.hhhy.db.beans.Article;
  */
 public class Controller extends CtrController {
    
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
+    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
     	super(kW,spyHistory);
 	}
     @Override
@@ -70,7 +72,17 @@ public class Controller extends CtrController {
         String website = "和讯论坛";
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("td.f14").select("a").text();
-            String time = "20"+ele.select("td").last().select("p").text()+":00";
+            String timeS = "20"+ele.select("td").last().select("p").text()+":00";
+            String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+            if(!timeS.startsWith(time2))continue;
+            System.out.println("time: " + timeS);
+            long time = 0;
+            try {
+                time = DateFormatUtils.getTime(timeS, "yy-MM-dd HH:mm");
+            } catch (ParseException e) {
+                System.out.println(timeS);
+            }
+//            String time = "20"+ele.select("td").last().select("p").text().substring(0,8);
             String summary = "";
             String url = ele.select("td.f14").select("a").attr("href");
             String content ="";
@@ -81,11 +93,12 @@ public class Controller extends CtrController {
             }
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory1, title)){
+            if(Transmition.contentFilter(words, content, key, FNum)){
                 spyHistory.add(title);
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+                System.out.println(time);
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }
 

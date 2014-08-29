@@ -1,22 +1,20 @@
 package com.hhhy.crawler.cs_com_cn;
 
-import com.hhhy.crawler.Crawl;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Page;
 import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,7 +24,7 @@ import java.util.*;
 public class Controller extends CtrController {
     public final String BASE_URL = "http://search.cs.com.cn/newsSimpleSearch.do?";
 
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
+    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
         super(kW,spyHistory);
     }
 
@@ -72,11 +70,20 @@ public class Controller extends CtrController {
         String[] words = entry.getValue().split(";");
         String key =entry.getKey().split(";")[0];
         for (Element ele : (ArrayList<Element>) tableList) {
-            String time = ele.select("tbody").select("td").last().text()
+            String timeS = ele.select("tbody").select("td").last().text()
                     .replace("&nbsp", "");
             String title = ele.select("tbody").select("td").first().select("a")
                     .text();
-            time = FormatTime.getTime(time, "(\\d{4}\\.\\d{2}\\.\\d{2})", 1).replaceAll("\\.", "-");
+            timeS = FormatTime.getTime(timeS, "(\\d{4}\\.\\d{2}\\.\\d{2} \\d{2}:\\d{2}:\\d{2})", 1).replaceAll("\\.", "-");
+            String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+            if(!timeS.startsWith(time2)) continue;
+            System.out.println("time: " + timeS);
+            long time = 0;
+            try {
+                time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
+            } catch (ParseException e) {
+                System.out.println(timeS);
+            }
             String url = ele.select("tbody").select("td").first()
                     .select("a").attr("href");
             String summary = ele.select("div.hei12").text();
@@ -84,11 +91,11 @@ public class Controller extends CtrController {
             String content = Page.getContent(url, "div#ozoom1",
                     "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory3, title)){
+            if(Transmition.contentFilter(words, content, key, FNum)){
                 spyHistory.add(title);
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }

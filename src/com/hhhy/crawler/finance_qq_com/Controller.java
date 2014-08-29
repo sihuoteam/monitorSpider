@@ -1,21 +1,19 @@
 package com.hhhy.crawler.finance_qq_com;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
 import com.hhhy.crawler.Crawl;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Transmition;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA. User: Ghost Date: 14-7-6 Time: 下午4:25 To change
@@ -24,7 +22,7 @@ import com.hhhy.db.beans.Article;
 public class Controller extends CtrController {
 	public final String BASE_URL = "http://www.sogou.com/sogou";
 
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
+    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
         super(kW,spyHistory);
     }
     @Override
@@ -42,10 +40,10 @@ public class Controller extends CtrController {
 
 			String html = GetHTML
 					.getHtml(
-							"http://www.sogou.com/sogou?site=finance.qq.com&query="
-									+ transKey
-									+ "&pid=sogou-wsse-b58ac8403eb9cf17-0017&sourceid=&idx=f",
-							"UTF-8");
+                            "http://www.sogou.com/sogou?site=finance.qq.com&query="
+                                    + transKey
+                                    + "&pid=sogou-wsse-b58ac8403eb9cf17-0017&sourceid=&idx=f",
+                            "UTF-8");
 			html = html.replaceAll("&nbsp;", "");
 			Document document = Jsoup.parse(html);
 
@@ -82,18 +80,18 @@ public class Controller extends CtrController {
         for (Element ele : (ArrayList<Element>)tableList) {
             String title = ele.select("h3.pt").select("a").text();
             String time = FormatTime.getTime(ele.select("div.fb")
-                    .select("cite").first().text(), "\\d{2}小时前");
+                    .select("cite").first().text(), "\\d+小时前");
             if (time == null || time.length() == 0 || time.contains("小时前") || time.contains("分钟前"))
                 time = FormatTime.getCurrentFormatTime().split(" ")[0];
             String summary = ele.select("div.ft").text();
             String url = ele.select("h3.pt").select("a").attr("href");
             String content = summary;
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory5, title)){
+            if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time, Crawl.spyHistory5, title)){
                 spyHistory.add(title);
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }

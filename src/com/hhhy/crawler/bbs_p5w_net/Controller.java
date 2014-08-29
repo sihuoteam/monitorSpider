@@ -1,12 +1,11 @@
 package com.hhhy.crawler.bbs_p5w_net;
 
-import com.hhhy.crawler.Crawl;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Page;
 import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -25,7 +25,7 @@ import java.util.*;
  */
 public class Controller extends CtrController {
     private final String BASE_URL = "http://search.discuz.qq.com/f/search?q=%E8%82%A1%E7%A5%A8%E4%BB%B7%E6%A0%BC&sId=5407638&ts=1405320195&mySign=9f5d7f39&menu=1&orderField=default&rfh=1&qs=txt.shome.a";
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
+    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
         super(kW,spyHistory);
     }
     @Override
@@ -40,7 +40,7 @@ public class Controller extends CtrController {
     		} catch (UnsupportedEncodingException e) {
     			e.printStackTrace();
     		}
-    		String location = GetHTML.getHeaderValue("Location", "http://bbs.p5w.net/search.php?mod=my&q="+transKey);
+    		String location = GetHTML.getHeaderValue("Location", "http://bbs.p5w.net/search.php?mod=my&q=" + transKey);
     		String html = GetHTML.getHtml(location, "utf-8");
     		
     		html = html.replaceAll("&nbsp;","");
@@ -72,16 +72,23 @@ public class Controller extends CtrController {
         String website = "全景社区";
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3.title").select("a").text();
-            String time = Subutils.getTime(ele.select("p.meta").last().text());
+            String timeS = Subutils.getTime(ele.select("p.meta").last().text());
+            String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+            if(!timeS.startsWith(time2))continue;
+            System.out.println("time: " + timeS);
+            long time = 0;
+            try {time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");}
+            catch (ParseException e) {System.out.println(timeS);}
             String summary = ele.select("p.content").text();
             String url = ele.select("h3.title").select("a").attr("href");
             String content = Page.getContent(url, "div.pcb", "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory2, title)){
+            if(Transmition.contentFilter(words, content, key, FNum)){
                 spyHistory.add(title);
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+                System.out.println(time);
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }
