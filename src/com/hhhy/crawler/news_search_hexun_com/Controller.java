@@ -74,7 +74,7 @@ public class Controller extends CtrController {
             String title = ele.select("div.ul_t").select("h3").select("a")
                     .text();
             String timeContent = ele.select("div.ul_t").select("h4").text();
-
+            System.out.println("timeContent:" + timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){
                 timeS = FormatTime.getTime(timeContent, "\\d+小时前");
@@ -84,6 +84,7 @@ public class Controller extends CtrController {
                     else {timeS = timeS.replaceAll("年","-").replaceAll("月","-").replace("日","");}
                 }
             }
+            long time = 0;
             if(timeS != null) {
                 if (timeS.contains("分钟前")) {
                     timeS = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss");
@@ -98,17 +99,17 @@ public class Controller extends CtrController {
                     timeHN = timeH - timeHN;
                     timeS = day + " " + timeHN + ":" + f + ":" + m;
                 }
+                String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+                if(!timeS.startsWith(time2)) continue;
+                System.out.println("time: " + timeS);
+                try {
+                    time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
+                } catch (ParseException e) {
+                    System.out.println(timeS);
+                }
             }
 
-            String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-            if(!timeS.startsWith(time2)) continue;
-            System.out.println("time: " + timeS);
-            long time = 0;
-            try {
-                time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
-            } catch (ParseException e) {
-                System.out.println(timeS);
-            }
+
 //            if (time == null || time.length() == 0 || time.contains("分钟前") || time.contains("小时前")	)
 //                time = FormatTime.getCurrentFormatTime().split(" ")[0];
             String summary = ele.select("div.cont").text();
