@@ -60,7 +60,7 @@ public class Controller extends CtrController {
                 for(Element ele:flag){
                     String url = ele.select("a").attr("href");
                   String title = ele.select("a").text();
-                  String src = ele.select("style2a").html();
+                  String src = ele.select("style2a").text();
                   String summary =ele.select(".cc").text();
 
                   if(title.contains(keyWord) || summary.contains(keyWord)) {
