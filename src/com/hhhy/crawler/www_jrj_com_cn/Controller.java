@@ -1,10 +1,7 @@
 package com.hhhy.crawler.www_jrj_com_cn;
 
 
-import com.hhhy.crawler.Crawl;
-import com.hhhy.crawler.CtrController;
-import com.hhhy.crawler.Page;
-import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.*;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
@@ -26,13 +23,12 @@ import java.util.*;
  */
 public class Controller extends CtrController{
     private final String BASE_URL = "http://jinsoo.jrj.com.cn/search.jsp";
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
 
     @Override
     public void parseBoard() {
-        Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String transKey = "";
@@ -73,8 +69,7 @@ public class Controller extends CtrController{
             String content = Page.getContent(url, "div.text-col", "gbk");
             System.out.println("TIME IS:"+time);
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if (Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time, Crawl.spyHistory25, title)) {
-                spyHistory.add(title);
+            if (Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)) {
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));

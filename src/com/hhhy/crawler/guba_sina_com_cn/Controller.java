@@ -1,5 +1,6 @@
 package com.hhhy.crawler.guba_sina_com_cn;
 
+import com.hhhy.crawler.Crawler;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Page;
 import com.hhhy.crawler.Transmition;
@@ -27,12 +28,11 @@ import java.util.*;
  */
 public class Controller extends CtrController {
     private final String BASE_URL = "";
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
     @Override
     public void parseBoard(){
-        Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String transKey = "";
@@ -114,13 +114,11 @@ public class Controller extends CtrController {
 
 
 
-
             String summary = ele.select("div.il_txt").select("p.ilt_p").text();
             String url = "http://guba.sina.com.cn"+ele.select("div.il_txt").select("h4.ilt_tit").select("a").attr("href");
             String content = Page.getContent(url, "div.ilt_p", "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, content, key, FNum)){
-                spyHistory.add(title);
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));

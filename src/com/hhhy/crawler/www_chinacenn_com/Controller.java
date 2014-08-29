@@ -13,15 +13,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-import com.hhhy.crawler.Crawl;
+import com.hhhy.crawler.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.hhhy.crawler.CtrController;
-import com.hhhy.crawler.Page;
-import com.hhhy.crawler.Transmition;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
@@ -29,13 +26,12 @@ import com.hhhy.db.beans.Article;
 public class Controller extends CtrController {
     public final String BASE_URL = "http://www.chinacenn.com/SerchList.aspx";
 
-    public Controller(HashMap<String,String> kW,LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
 
     @Override
     public void parseBoard() {
-        Iterator<Map.Entry<String, String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iterator = Crawler.keyWords.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> entry = iterator.next();
             String transKey = "";
@@ -80,13 +76,12 @@ public class Controller extends CtrController {
         String key = entry.getKey().split(";")[0];
         for (Element ele : (ArrayList<Element>) tableList) {
             String title = ele.select("div.y2_wz11").select("h4.STYLE5").select("a").text();
-            String time = Subutils.getTime(ele.select("div.y2_wz11").select("h5").text());
+            String time = FormatTime.getTime(ele.select("div.y2_wz11").select("h5").text(),"(\\d{4}-\\d{2}-\\d{2})",1);
             String summary = ele.select("div.y2_wz11").select("h6").text();
             String url = "http://www.chinacenn.com/" + ele.select("div.y2_wz11").select("h4.STYLE5").select("a").attr("href");
             String content = Page.getContent(url, "span#zoom", "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory13, title)){
-                spyHistory.add(title);
+            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));

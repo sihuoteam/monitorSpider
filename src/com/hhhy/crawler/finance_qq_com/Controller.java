@@ -1,6 +1,7 @@
 package com.hhhy.crawler.finance_qq_com;
 
 import com.hhhy.crawler.Crawl;
+import com.hhhy.crawler.Crawler;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Transmition;
 import com.hhhy.crawler.util.FormatTime;
@@ -86,8 +87,7 @@ public class Controller extends CtrController {
             String url = ele.select("h3.pt").select("a").attr("href");
             String content = summary;
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time, Crawl.spyHistory5, title)){
-                spyHistory.add(title);
+            if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));

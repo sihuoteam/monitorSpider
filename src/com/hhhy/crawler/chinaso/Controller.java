@@ -1,9 +1,6 @@
 package com.hhhy.crawler.chinaso;
 
-import com.hhhy.crawler.Crawl;
-import com.hhhy.crawler.CtrController;
-import com.hhhy.crawler.Page;
-import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.*;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
@@ -80,8 +77,7 @@ public class Controller extends CtrController {
                 String content = Page.getAllHtmlContent(url);
 
                 ArrayList<Integer> FNum = new ArrayList<Integer>();
-                if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time, Crawl.spyHistory1, title)){
-                    spyHistory.add(title);
+                if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
                     Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                     //调接口~~~~~
                     Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));

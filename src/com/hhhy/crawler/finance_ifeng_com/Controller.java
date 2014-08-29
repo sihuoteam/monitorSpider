@@ -1,5 +1,6 @@
 package com.hhhy.crawler.finance_ifeng_com;
 
+import com.hhhy.crawler.Crawler;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Page;
 import com.hhhy.crawler.Transmition;
@@ -89,7 +90,6 @@ public class Controller extends CtrController {
                     "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, content, key, FNum)){
-                spyHistory.add(title);
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));

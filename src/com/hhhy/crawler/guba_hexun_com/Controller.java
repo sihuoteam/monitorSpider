@@ -1,8 +1,6 @@
 package com.hhhy.crawler.guba_hexun_com;
 
-import com.hhhy.crawler.CtrController;
-import com.hhhy.crawler.Page;
-import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.*;
 import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
@@ -25,12 +23,12 @@ import java.util.*;
 public class Controller extends CtrController {
 	private final String BASE_URL = "http://news.search.hexun.com/cgi-bin/search/info_search.cgi?f=1&key=%B9%C9%C6%B1&s=1&pg=1&t=0&rel=";
 
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
+
     }
     @Override
 	public void parseBoard() {
-        Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String transKey = "";
@@ -124,7 +122,6 @@ public class Controller extends CtrController {
                     "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, content, key, FNum)){
-                spyHistory.add(title);
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));

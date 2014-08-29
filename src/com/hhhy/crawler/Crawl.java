@@ -1,7 +1,5 @@
 package com.hhhy.crawler;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.TimerTask;
 
 import com.hhhy.crawler.util.MyLog;

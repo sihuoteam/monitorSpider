@@ -2,17 +2,16 @@ package com.hhhy.crawler;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.hhhy.crawler.util.FormatTime;
-import com.hhhy.crawler.util.JsonUtils;
-import com.hhhy.crawler.util.MyLog;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.db.beans.Article;
-import com.hhhy.web.client.thrift.ThriftClient;
 
 public class Transmition {
     private static Set<String> urlFilter = new HashSet<String>();
@@ -45,10 +44,10 @@ public class Transmition {
         }
 
     }
-    public static boolean timeFilter(String time, List<String> spyHistory, String title){
+    public static boolean timeFilter(String time){
         if(time==null)
             return false;
-        if(FormatTime.isAfterToday(time) && !spyHistory.contains(title))
+        if(FormatTime.isAfterToday(time))
             return true;
         else return false;
     }
@@ -102,7 +101,7 @@ public class Transmition {
             if(urlFilter.contains(article.getTitle())){
                 return;
             }else{
-                urlFilter.add(article.getTitle());
+                urlFilter.add(article.getUrl());
             }
 
             if(System.currentTimeMillis()-lastUpdate>24*60*60*1000){
