@@ -60,26 +60,26 @@ public class Controller extends CtrController {
                 for(Element ele:flag){
                     String url = ele.select("a").attr("href");
                   String title = ele.select("a").text();
-                  String src = ele.select("style2a").text();
+                  String src = ele.select(".style2a").text();
                   String summary =ele.select(".cc").text();
 
                   if(title.contains(keyWord) || summary.contains(keyWord)) {
                     System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
-                    if (src.length() < 16) continue;
-                    String time = src.substring(src.length() - 16);
+                    if (src.length() < 10) continue;
+                    String time = src.substring(src.length() - 10);
                     String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
                     if (!time.startsWith(time2)) continue;
                     System.out.println("time: " + time);
                     long ctime = 0;
                     try {
-                      ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm");
+                      ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd");
                     } catch (ParseException e) {
                       e.printStackTrace();
                       continue;
                     }
                     System.out.println("搜狗time: " + ctime);
                     int type = 1;
-                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, "搜狗新闻搜索", keyWord, 1);
+                    Article article = Transmition.getArticle(type, title, summary, url, System.currentTimeMillis(), summary, "搜狗新闻搜索", keyWord, 1);
                     Transmition.transmit(article);
                   }
                 }
