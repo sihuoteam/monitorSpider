@@ -89,7 +89,7 @@ public class Controller extends CtrController {
                     timeS = null;
                 }
             }
-
+            long time = 0;
             if(timeS != null) {
 
                 if (timeS.contains("分钟前")) {
@@ -100,17 +100,18 @@ public class Controller extends CtrController {
                     timeS = sdf2.format(new Date());
                     timeS += " " + hh_ff;
                 }
+                String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+                if(!timeS.startsWith(time2)) continue;
+                System.out.println("time: " + timeS);
+
+                try {
+                    time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm");
+                } catch (ParseException e) {
+                    System.out.println(timeS);
+                }
             }
 
-            String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-            if(!timeS.startsWith(time2)) continue;
-            System.out.println("time: " + timeS);
-            long time = 0;
-            try {
-                time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm");
-            } catch (ParseException e) {
-                System.out.println(timeS);
-            }
+
 
 
             String summary = ele.select("div.il_txt").select("p.ilt_p").text();
