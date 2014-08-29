@@ -54,7 +54,7 @@ public class Controller extends CtrController {
 			/*
 			 * 搜索关键词是否存在
 			 */
-			Elements flag = document.select("div.blk_list").select("div");
+			Elements flag = document.select("div.blk_list").select("div[tid]");
 			if (flag.size() == 0) {
 				// Todo ??
 				System.out.println("nothing to found.....");
@@ -82,6 +82,7 @@ public class Controller extends CtrController {
 //            String time = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String timeContent = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
+            System.out.println(timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){
                 timeS = FormatTime.getTime(timeContent, "今天\\d{2}:\\d{2}");
