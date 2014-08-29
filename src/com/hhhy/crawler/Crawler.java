@@ -49,9 +49,9 @@ public class Crawler extends TimerTask {
 		PropertiesUtil.loadFile("spiderConf.properties");
 		String webNames = PropertiesUtil.getPropertyValue("webNames");
 		webs = webNames.split(";");
-        if(keyWords==null || keyWords.isEmpty()){
+        while(keyWords==null || keyWords.isEmpty()){
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
