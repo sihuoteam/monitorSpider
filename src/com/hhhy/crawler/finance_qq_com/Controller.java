@@ -22,12 +22,11 @@ import java.util.*;
 public class Controller extends CtrController {
 	public final String BASE_URL = "http://www.sogou.com/sogou";
 
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
     @Override
 	public void parseBoard() {
-    Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+    Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
     while(iterator.hasNext()){
         Map.Entry<String,String> entry = iterator.next();
         String transKey = "";

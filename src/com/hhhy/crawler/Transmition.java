@@ -15,6 +15,8 @@ import com.hhhy.db.beans.Article;
 import com.hhhy.web.client.thrift.ThriftClient;
 
 public class Transmition {
+    private static Set<String> urlFilter = new HashSet<String>();
+    private static long lastUpdate = System.currentTimeMillis();
 
     public static boolean contentFilter(String[] words,String content,String key,ArrayList<Integer> FNum){
 
@@ -90,14 +92,25 @@ public class Transmition {
         return article;
 	}
 
-	public static void transmit(Article article) {
+            // TODO: should sync
+	public static  void transmit(Article article) {
 		if (article!=null
 				&& article.getContent().length() > 0
 				&& article.getSummary().length() > 0
 				&& article.getTitle().length() > 0
 				&& article.getUrl().length() > 0) {
-			String jsonArticleStr = JsonUtils.toJson(article);
-            MyLog.logINFO(jsonArticleStr);
+            if(urlFilter.contains(article.getTitle())){
+                return;
+            }else{
+                urlFilter.add(article.getTitle());
+            }
+
+            if(System.currentTimeMillis()-lastUpdate>24*60*60*1000){
+                urlFilter.clear();
+                lastUpdate = System.currentTimeMillis();
+            }
+			// String jsonArticleStr = JsonUtils.toJson(article);
+            // MyLog.logINFO(jsonArticleStr);
 			try {
 				ThriftClient client = ThriftClient.getInstance();
 				client.addArticle(jsonArticleStr);

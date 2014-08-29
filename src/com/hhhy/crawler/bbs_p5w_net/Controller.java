@@ -25,12 +25,11 @@ import java.util.*;
  */
 public class Controller extends CtrController {
     private final String BASE_URL = "http://search.discuz.qq.com/f/search?q=%E8%82%A1%E7%A5%A8%E4%BB%B7%E6%A0%BC&sId=5407638&ts=1405320195&mySign=9f5d7f39&menu=1&orderField=default&rfh=1&qs=txt.shome.a";
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
     @Override
     public void parseBoard(){
-        Iterator<Map.Entry<String,String>> iterator= this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator= Crawler.keyWords.entrySet().iterator();
     	while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String keyWord = entry.getKey().split(";")[0];

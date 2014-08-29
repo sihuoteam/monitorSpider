@@ -27,7 +27,7 @@ public class Crawler extends TimerTask {
         public void run() {
             ThriftClient client = ThriftClient.getInstance();
             try {
-                keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), HashMap.class);
+                keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), Map.class);
             } catch (TException e) {
                 e.printStackTrace();
             }
@@ -40,7 +40,7 @@ public class Crawler extends TimerTask {
     }
 
 	LinkedList<Timer> crawlList= null;
-	public static LinkedList<String> spyHistory = new LinkedList<String>();
+	public static Set<String> spyHistory = new HashSet<String>();
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
@@ -62,7 +62,7 @@ public class Crawler extends TimerTask {
 		if(crawlList.size()==0){
 			for(String webName:webs){
 				Timer timer = new Timer();
-				timer.schedule(new Crawl(keyWords,webName,spyHistory),0,blankTime);
+				timer.schedule(new Crawl(keyWords,webName),0,blankTime);
 				crawlList.add(timer);
 			}
 		}
@@ -73,7 +73,7 @@ public class Crawler extends TimerTask {
 			crawlList.clear();
 			for(String webName:webs){
 				Timer timer = new Timer();
-				timer.schedule(new Crawl(keyWords,webName,spyHistory),0,blankTime);
+				timer.schedule(new Crawl(keyWords,webName),0,blankTime);
 				crawlList.add(timer);
 			}
 		}
