@@ -54,15 +54,17 @@ public class Controller extends CtrController {
 			/*
 			 * 搜索关键词是否存在
 			 */
+
 			Elements flag = document.select("div.blk_list").select("div[tid]");
 			if (flag.size() == 0) {
 				// Todo ??
 				System.out.println("nothing to found.....");
 			} else {
-				Elements tableEles = document.select("div.blk_list").select(
-						"div");
+//                System.out.println(document.select("div.blk_list"));
+//				Elements tableEles = document.select("div.blk_list").select(
+//						"div");
 				ArrayList<Element> tableList = new ArrayList<Element>();
-				for (Element ele : tableEles) {
+				for (Element ele : flag) {
 					tableList.add(ele);
 				}
 				parsePages(tableList,entry);
@@ -79,9 +81,14 @@ public class Controller extends CtrController {
         String key = entry.getKey().split(";")[0];
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("div.il_txt").select("h4.ilt_tit").select("a").text();
+            System.out.println(title);
 //            String time = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String timeContent = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
+//            String timeContent = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
+//            System.out.println(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
+//            System.out.println(ele.select(".fl_left").text());
+//            System.out.println(timeContent);
+            String timeContent = ele.select(".fl_left").select("a").text();
             System.out.println(timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){

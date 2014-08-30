@@ -36,6 +36,7 @@ public class Controller extends CtrController {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
+            System.out.println("keyWord: "+keyWord);
 			String html = GetHTML.getHtml(
                     "http://news.search.hexun.com/cgi-bin/search/info_search.cgi?f=0&key="
                             + transKey + "&s=1&pg=1&t=1&rel=", "gb2312");
@@ -50,11 +51,16 @@ public class Controller extends CtrController {
 				// Todo ??
 				System.out.println("nothing to found.....");
 			} else {
-				Elements tableEles = document.select("div.list > ul").select(
-						"li");
+				Elements tableEles = flag.select("li");
+                if(tableEles.size()==0)continue;
 				ArrayList<Element> tableList = new ArrayList<Element>();
 				for (Element ele : tableEles) {
+                    if(ele.select(".cont").size()>0 && ele.select(".ul_t").size()>0)
 					tableList.add(ele);
+                    else{
+//                        if(keyWord.equals("百度"))
+//                        System.out.println(ele.html());
+                    }
 				}
 				parsePages(tableList,entry);
 			}
@@ -69,9 +75,11 @@ public class Controller extends CtrController {
         String[] words = entry.getValue().split(";");
         String key = entry.getKey().split(";")[0];
         for (Element ele : (ArrayList<Element>)tableList) {
+            System.out.println(ele.html());
             String title = ele.select("div.ul_t").select("h3").select("a")
                     .text();
-            String timeContent = ele.select("div.ul_t").select("h4").text();
+            System.out.println("title:"+title);
+            String timeContent = ele.select("h4").text();
             System.out.println("timeContent:" + timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){
@@ -113,6 +121,7 @@ public class Controller extends CtrController {
             String summary = ele.select("div.cont").text();
             String url = ele.select("div.ul_t").select("h3")
                     .select("a").attr("href");
+            System.out.println("url: "+url);
             String content = Page.getContent(url, "div#artibody",
                     "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();

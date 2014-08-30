@@ -58,7 +58,7 @@ public class Controller extends CtrController {
                   String src = ele.select("cite").text();
                   String summary =ele.select(".thumb_news").text();
                   if(title.contains(keyWord) || summary.contains(keyWord)) {
-                    System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
+//                    System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
                     if (src.length() < 16) continue;
                     String time = src.substring(src.length() - 16);
                     String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
