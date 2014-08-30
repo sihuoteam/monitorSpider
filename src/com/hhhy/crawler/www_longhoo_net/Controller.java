@@ -62,13 +62,11 @@ public class Controller extends CtrController{
             String content = Page.getContent(url,"div.content_nr","utf-8");
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(time!=null){
-                if(Transmition.contentFilter(words,summary, content, key, FNum) && Transmition.timeFilter(time)){
-                    Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                    //调接口~~~~~
-                    Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
-                    Transmition.transmit(article);
-                }
+            if(Transmition.contentFilter(words,summary, content, key, FNum) && Transmition.timeFilter(time)){
+                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+                //调接口~~~~~
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Transmition.transmit(article);
             }
         }
     }

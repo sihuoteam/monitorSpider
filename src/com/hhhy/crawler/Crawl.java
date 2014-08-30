@@ -35,10 +35,6 @@ public class Crawl extends TimerTask{
             controller =  new com.hhhy.crawler.finance_ifeng_com.Controller();
             controller.parseBoard();
 		}
-		if(this.webName.equals("finance_qq_com")){
-            controller =  new com.hhhy.crawler.finance_qq_com.Controller();
-            controller.parseBoard();
-		}
 		if(this.webName.equals("guba_hexun_com")){
             controller =  new com.hhhy.crawler.guba_hexun_com.Controller();
             controller.parseBoard();
