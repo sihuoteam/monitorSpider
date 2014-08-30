@@ -83,7 +83,7 @@ public class Transmition {
 		Article article = new Article();
         article.setTitle(title);
         article.setType(type);
-        article.setSummary(summary);
+        article.setSummary(summary.length()>0?summary:content);
         article.setTime(time);
         article.setContent(content.length()>0?content:summary);
         article.setUrl(url);
