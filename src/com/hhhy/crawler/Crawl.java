@@ -23,6 +23,10 @@ public class Crawl extends TimerTask{
             controller =  new com.hhhy.crawler.bbs_p5w_net.Controller();
             controller.parseBoard();
 		}
+        if(this.webName.equals("chinaso")){
+            controller =  new com.hhhy.crawler.chinaso.Controller();
+            controller.parseBoard();
+        }
 		if(this.webName.equals("cs_com_cn")){
             controller =  new com.hhhy.crawler.cs_com_cn.Controller();
             controller.parseBoard();
@@ -43,20 +47,35 @@ public class Crawl extends TimerTask{
             controller =  new com.hhhy.crawler.guba_sina_com_cn.Controller();
             controller.parseBoard();
 		}
+        if(this.webName.equals("info_search_news_cn")){
+            controller =  new com.hhhy.crawler.info_search_news_cn.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("news_baidu_com")){
+            controller =  new com.hhhy.crawler.news_baidu_com.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("news_search_hexun_com")){
+            controller =  new com.hhhy.crawler.news_search_hexun_com.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("news_sougou_com")){
+            controller =  new com.hhhy.crawler.news_sougou_com.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("search360")){
+            controller = new com.hhhy.crawler.search360.Controller();
+            controller.parseBoard();
+        }
 		if(this.webName.equals("www_10jqka_com_cn")){
             controller =  new com.hhhy.crawler.www_10jqka_com_cn.Controller();
-
             controller.parseBoard();
 		}
-		if(this.webName.equals("www_55188_com")){
-            controller =  new com.hhhy.crawler.www_55188_com.Controller();
+        if(this.webName.equals("www_caijing_com_cn")){
+            controller = new com.hhhy.crawler.www_caijing_com_cn.Controller();
             controller.parseBoard();
-		}
-		if(this.webName.equals("www_askci_com")){
-            controller = new com.hhhy.crawler.www_askci_com.Controller();
-            controller.parseBoard();
-		}
-		if(this.webName.equals("wwww_ce_cn")){
+        }
+		if(this.webName.equals("www_ce_cn")){
             controller = new com.hhhy.crawler.www_ce_cn.Controller();
             controller.parseBoard();
 		}
@@ -85,11 +104,28 @@ public class Crawl extends TimerTask{
             controller = new com.hhhy.crawler.www_djtz_net.Controller();
             controller.parseBoard();
 		}
+        if(this.webName.equals("www_eeo_com_cn")){
+            controller = new com.hhhy.crawler.www_eeo_com_cn.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("www_financialnews_com_cn")){
+            controller = new com.hhhy.crawler.www_financialnews_com_cn.Controller();
+            controller.parseBoard();
+        }
 		if(this.webName.equals("www_ftchinese_com")){
             controller = new com.hhhy.crawler.www_ftchinese_com.Controller();
             controller.parseBoard();
 		}
-		if(this.webName.equals("www_qianlong_com")){
+        if(this.webName.equals("www_jrj_com_cn")){
+            controller = new com.hhhy.crawler.www_jrj_com_cn.Controller();
+            controller.parseBoard();
+        }
+        if(this.webName.equals("www_longhoo_net")){
+            controller = new com.hhhy.crawler.www_longhoo_net.Controller();
+            controller.parseBoard();
+        }
+
+        if(this.webName.equals("www_qianlong_com")){
             controller = new com.hhhy.crawler.www_qianlong_com.Controller();
             controller.parseBoard();
 		}
@@ -105,37 +141,5 @@ public class Crawl extends TimerTask{
             controller = new com.hhhy.crawler.www_zjol_com_cn.Controller();
             controller.parseBoard();
 		}
-        if(this.webName.equals("www_caijing_com_cn")){
-            controller = new com.hhhy.crawler.www_caijing_com_cn.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("www_eeo_com_cn")){
-            controller = new com.hhhy.crawler.www_eeo_com_cn.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("www_jrj_com_cn")){
-            controller = new com.hhhy.crawler.www_jrj_com_cn.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("www_longhoo_net")){
-            controller = new com.hhhy.crawler.www_longhoo_net.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("www_financialnews_com_cn")){
-            controller = new com.hhhy.crawler.www_financialnews_com_cn.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("news_baidu_com")){
-            controller = new com.hhhy.crawler.news_baidu_com.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("search360")){
-            controller = new com.hhhy.crawler.search360.Controller();
-            controller.parseBoard();
-        }
-        if(this.webName.equals("chinaso")){
-            controller = new com.hhhy.crawler.chinaso.Controller();
-            controller.parseBoard();
-        }
 	}
 }
