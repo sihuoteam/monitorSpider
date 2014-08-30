@@ -36,7 +36,7 @@ public class Controller extends CtrController {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-            System.out.println("keyWord: "+keyWord);
+            System.out.println("keyword:"+keyWord);
 			String html = GetHTML.getHtml(
                     "http://news.search.hexun.com/cgi-bin/search/info_search.cgi?f=0&key="
                             + transKey + "&s=1&pg=1&t=1&rel=", "gb2312");
@@ -57,11 +57,8 @@ public class Controller extends CtrController {
 				for (Element ele : tableEles) {
                     if(ele.select(".cont").size()>0 && ele.select(".ul_t").size()>0)
 					tableList.add(ele);
-                    else{
-//                        if(keyWord.equals("百度"))
-//                        System.out.println(ele.html());
-                    }
 				}
+                System.out.println("搜索出" + tableList.size() + "个结果");
 				parsePages(tableList,entry);
 			}
 		}
@@ -75,12 +72,13 @@ public class Controller extends CtrController {
         String[] words = entry.getValue().split(";");
         String key = entry.getKey().split(";")[0];
         for (Element ele : (ArrayList<Element>)tableList) {
-            System.out.println(ele.html());
+//            System.out.println(ele.html());
             String title = ele.select("div.ul_t").select("h3").select("a")
                     .text();
-            System.out.println("title:"+title);
+//            System.out.println("title:"+title);
             String timeContent = ele.select("h4").text();
-            System.out.println("timeContent:" + timeContent);
+
+            System.out.println("页面上找到时间timeS:" + timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){
                 timeS = FormatTime.getTime(timeContent, "\\d+小时前");
@@ -89,7 +87,7 @@ public class Controller extends CtrController {
                     if(timeS == null || timeS.equals("")){timeS = null;}
                     else {timeS = timeS.replaceAll("年","-").replaceAll("月","-").replace("日","");}
                 }
-            }
+            }else continue;
             long time = 0;
             if(timeS != null) {
                 if (timeS.contains("分钟前")) {
@@ -106,10 +104,13 @@ public class Controller extends CtrController {
                     timeS = day + " " + timeHN + ":" + f + ":" + m;
                 }
                 String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-                if(!timeS.startsWith(time2)) continue;
-                System.out.println("time: " + timeS);
+                System.out.println("今天时间time: " + time2);
+                if(!timeS.startsWith(time2))continue;
+                System.out.println("确认是今天的timeS: " + timeS);
                 try {
                     time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
+                    System.out.println("转换格式的time: " + time);
+                    System.out.println("现在时间time: " + System.currentTimeMillis());
                 } catch (ParseException e) {
                     System.out.println(timeS);
                 }
@@ -129,6 +130,7 @@ public class Controller extends CtrController {
 //                spyHistory.add(title);
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
+                System.out.println("存储时间："+time);
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }

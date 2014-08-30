@@ -32,6 +32,7 @@ public class Controller extends CtrController {
         Map.Entry<String,String> entry = iterator.next();
         String transKey = "";
         String keyWord = entry.getKey().split(";")[0];
+        System.out.println("keyword:"+keyWord);
 			try {
 				transKey = URLEncoder.encode(keyWord, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
@@ -65,6 +66,7 @@ public class Controller extends CtrController {
 				for (Element ele : tableEles) {
 					tableList.add(ele);
 				}
+                System.out.println("搜索出" + tableList.size() + "个结果");
 				parsePages(tableList,entry);
 			}
 		}
