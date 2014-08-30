@@ -2,8 +2,8 @@ package com.hhhy.crawler.www_caijing_com_cn;
 
 
 import com.hhhy.crawler.*;
+import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
-import com.hhhy.crawler.www_djtz_net.Subutils;
 import com.hhhy.db.beans.Article;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -75,7 +75,8 @@ public class Controller extends CtrController{
     	int type = 1;
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("a").text();
-            String time = Subutils.getTime(ele.select("span").text());
+            String time = FormatTime.getTime(ele.select("span").text(),"\\d{4}-\\d{2}-\\d{2}",1);
+//            String time = Subutils.getTime(ele.select("span").text());
             String summary = ele.select("p").text();
             String url = ele.select("a").attr("href");
             String content = Page.getContent(url,"div#the_content","UTF-8");

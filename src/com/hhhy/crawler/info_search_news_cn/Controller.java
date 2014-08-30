@@ -1,5 +1,6 @@
 package com.hhhy.crawler.info_search_news_cn;
 
+import com.hhhy.crawler.Crawler;
 import com.hhhy.crawler.CtrController;
 import com.hhhy.crawler.Transmition;
 import com.hhhy.crawler.util.DateFormatUtils;
@@ -32,7 +33,7 @@ import java.util.*;
 public class Controller extends CtrController {
     @Override
     public void parseBoard() {
-        Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
       System.out.println("kaishi");
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
@@ -94,7 +95,6 @@ public class Controller extends CtrController {
 
     }
 
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
 }

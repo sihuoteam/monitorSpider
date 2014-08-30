@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.hhhy.crawler.util.FormatTime;
+import com.hhhy.crawler.util.JsonUtils;
+import com.hhhy.web.client.thrift.ThriftClient;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
@@ -108,7 +110,7 @@ public class Transmition {
                 urlFilter.clear();
                 lastUpdate = System.currentTimeMillis();
             }
-			// String jsonArticleStr = JsonUtils.toJson(article);
+			String jsonArticleStr = JsonUtils.toJson(article);
             // MyLog.logINFO(jsonArticleStr);
 			try {
 				ThriftClient client = ThriftClient.getInstance();

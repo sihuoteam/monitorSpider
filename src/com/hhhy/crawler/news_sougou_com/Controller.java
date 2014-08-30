@@ -1,9 +1,6 @@
 package com.hhhy.crawler.news_sougou_com;
 
-import com.hhhy.crawler.Crawl;
-import com.hhhy.crawler.CtrController;
-import com.hhhy.crawler.Page;
-import com.hhhy.crawler.Transmition;
+import com.hhhy.crawler.*;
 import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
@@ -35,7 +32,7 @@ import java.util.*;
 public class Controller extends CtrController {
     @Override
     public void parseBoard() {
-        Iterator<Map.Entry<String,String>> iterator = this.keyWords.entrySet().iterator();
+        Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
       System.out.println("kaishi");
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
@@ -91,7 +88,6 @@ public class Controller extends CtrController {
 
     }
 
-    public Controller(HashMap<String, String> kW, LinkedList<String> spyHistory) {
-        super(kW,spyHistory);
+    public Controller() {
     }
 }
