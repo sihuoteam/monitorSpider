@@ -83,7 +83,7 @@ public class Controller extends CtrController {
             String url = ele.select("h3.title").select("a").attr("href");
             String content = Page.getContent(url, "div.pcb", "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words, content, key, FNum)){
+            if(Transmition.contentFilter(words, summary, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 System.out.println(time);
                 //调接口~~~~~

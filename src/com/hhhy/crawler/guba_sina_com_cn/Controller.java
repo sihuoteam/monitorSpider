@@ -125,7 +125,7 @@ public class Controller extends CtrController {
             String url = "http://guba.sina.com.cn"+ele.select("div.il_txt").select("h4.ilt_tit").select("a").attr("href");
             String content = Page.getContent(url, "div.ilt_p", "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words, content, key, FNum)){
+            if(Transmition.contentFilter(words, summary, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 System.out.println("存储的时间："+ time);
