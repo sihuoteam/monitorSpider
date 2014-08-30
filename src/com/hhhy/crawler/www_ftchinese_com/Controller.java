@@ -101,7 +101,7 @@ public class Controller extends CtrController {
             String url = "http://www.ftchinese.com"+tupple.h3.select("a").attr("href");
 
             String content = Page.getContent(url, "div#body-content-col", "utf-8");
-            System.out.println("TIME IS :"+time);
+
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));

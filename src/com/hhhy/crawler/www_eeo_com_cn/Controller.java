@@ -72,7 +72,15 @@ public class Controller extends CtrController{
 
             String summary = li2.text();
             String content = Page.getContent(url,"div#text_content","utf-8");
-            System.out.println("TIME IS:"+time);
+            System.out.println("TIME IS :"+time);
+            System.out.println("type:" + type);
+            System.out.println("title:" + title);
+            System.out.println("content:" + content);
+            System.out.println("url:" + url);
+            System.out.println("time:" + time);
+            System.out.println("summary:" + summary);
+            System.out.println("website:" + website);
+            System.out.println("----------------");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));

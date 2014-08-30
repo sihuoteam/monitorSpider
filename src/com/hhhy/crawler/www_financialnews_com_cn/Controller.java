@@ -58,7 +58,7 @@ public class Controller extends CtrController{
             String content = Page.getContent(url, "div.TRS_Editor", "utf-8");
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            System.out.println("TIME IS :"+title);
+
             if (Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)) {
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
@@ -69,8 +69,5 @@ public class Controller extends CtrController{
     }
 
     public Controller() {
-    }
-    public static void main(String[] args){
-        System.out.println();
     }
 }

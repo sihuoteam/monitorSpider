@@ -60,7 +60,7 @@ public class Controller extends CtrController{
             String summary = ele.select("p.intro").text();
             String url ="http://house.longhoo.net"+ele.select("h3").select("a").attr("href");
             String content = Page.getContent(url,"div.content_nr","utf-8");
-            System.out.println("TIME IS :"+time);
+
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(time!=null){
                 if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)){

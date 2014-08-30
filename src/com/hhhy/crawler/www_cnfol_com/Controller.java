@@ -81,7 +81,17 @@ public class Controller extends CtrController {
                     .attr("href");
             String content = Page.getContent(url, "div#__content",
                     "utf-8");
+
             ArrayList<Integer> FNum = new ArrayList<Integer>();
+            System.out.println("TIME IS :"+time);
+            System.out.println("type:" + type);
+            System.out.println("title:" + title);
+            System.out.println("content:" + content);
+            System.out.println("url:" + url);
+            System.out.println("time:" + time);
+            System.out.println("summary:" + summary);
+            System.out.println("website:" + website);
+            System.out.println("----------------");
             if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
