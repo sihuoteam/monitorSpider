@@ -52,13 +52,14 @@ public class Controller extends CtrController{
 
 
             Elements flag = document.select("div.searchtext").select("ul").select("li");
+            System.out.println("keyword: "+keyWord);
             if(flag.size()==0){
                 //TODO ??
                 System.out.println("nothing to found.....");
                 System.out.println(html);
             }
             else{
-                Elements tableEles = document.select("div.searchtext").select("ul").select("li").select("div.searchxt");
+                Elements tableEles = document.select("div.searchtext").select("ul").select("li");
                 ArrayList<Element> tableList = new ArrayList<Element>();
                 for(Element ele:tableEles){
                     tableList.add(ele);
@@ -75,13 +76,19 @@ public class Controller extends CtrController{
     	int type = 1;
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("a").text();
-            String time = FormatTime.getTime(ele.select("span").text(),"\\d{4}-\\d{2}-\\d{2}",1);
+            System.out.println(ele.select("span").text());
+            String time = FormatTime.getTime(ele.select("span").text(),"\\d{4}-\\d{2}-\\d{2}");
             String summary = ele.select("p").text();
             String url = ele.select("a").attr("href");
             String content = Page.getContent(url,"div#the_content","UTF-8");
+            System.out.println("title: "+title);
+            System.out.println("time: "+time);
+            System.out.println("summary: "+summary);
+            System.out.println(content);
+            System.out.println("url: "+url);
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words,summary, content, key, FNum) && Transmition.timeFilter(time)){
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
