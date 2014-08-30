@@ -27,7 +27,7 @@ public class Crawler extends TimerTask {
         public void run() {
             ThriftClient client = ThriftClient.getInstance();
             try {
-                keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), Map.class);
+                keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), HashMap.class);
             } catch (TException e) {
                 e.printStackTrace();
             }
