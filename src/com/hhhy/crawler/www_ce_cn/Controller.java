@@ -45,22 +45,19 @@ public class Controller  extends CtrController{
 			html = html.replaceAll("&nbsp;", "");
 			Document document = Jsoup.parse(html);
 
-			String flag = document.select("div#main").select("ul#m-result")
-					.select("li.res-list").text();
-			if (flag.equals("")) {
+			Elements flag = document.select("div#main").select("ul#m-result")
+					.select("li.res-list");
+			if (flag.size()==0) {
 				// Todo ??
 				System.out.println("nothing have found...");
 			} else {
-				Elements tableEles = document.select("div#main")
-						.select("ul#m-result").select("li.res-list");
 				ArrayList<Element> tableList = new ArrayList<Element>();
-				for (Element ele : tableEles) {
+				for (Element ele : flag) {
 					tableList.add(ele);
 				}
 				parsePages(tableList,entry);
 			}
     	}
-        
     }
 
     @Override
@@ -71,21 +68,13 @@ public class Controller  extends CtrController{
         String key = entry.getKey().split(";")[0];
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3.res-title").select("a").text();
-            String time = FormatTime.getTime(ele.select("p.res-linkinfo").select("cite").text(),"\\d+-\\d+-\\d+");
+            String time = FormatTime.getTime(ele.select("p.res-linkinfo").select("cite").text(),"(\\d+-\\d+-\\d+)",1);
             String summary = ele.select("h3.res-title + div").text();
             String url = ele.select("h3.res-title").select("a").attr("href");
 
-            String content = Page.getAllHtmlContent(url);
+            String content = summary;
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            System.out.println("TIME IS :"+time);
-            System.out.println("type:" + type);
-            System.out.println("title:" + title);
-            System.out.println("content:" + content);
-            System.out.println("url:" + url);
-            System.out.println("time:" + time);
-            System.out.println("summary:" + summary);
-            System.out.println("website:" + website);
-            System.out.println("----------------");
+
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
@@ -93,5 +82,9 @@ public class Controller  extends CtrController{
                 Transmition.transmit(article);
             }
         }
+    }
+    public static void main(String[] args){
+        System.out.println(GetHTML.getHtml("http://www.so.com/s?q=" + "ghost"
+        + "&ie=gbk&src=zz_www_ce_cn&site=ce.cn&rg=1","utf-8"));
     }
 }

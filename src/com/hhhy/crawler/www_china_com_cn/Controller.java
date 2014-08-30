@@ -77,7 +77,7 @@ public class Controller extends CtrController {
         String key = entry.getKey().split(";")[0];
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3.t").select("a").text();
-            String time = FormatTime.getTime(ele.select("span.g").text(),"\\d+-\\d+-\\d+");
+            String time = FormatTime.getTime(ele.select("span.g").text(),"(\\d+-\\d+-\\d+)",1);
             String summary = ele.select("div.c-abstract").text();
             String url = ele.select("h3.t").select("a").attr("href");
             String content = Page.getAllHtmlContent(url);

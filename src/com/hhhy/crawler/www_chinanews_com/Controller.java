@@ -70,27 +70,19 @@ public class Controller extends CtrController {
 
     @Override
     public void parsePages(ArrayList<?> tableList, Map.Entry<String, String> entry) {
-        String website = "中国企业新闻";
-        int type = 4;
+        String website = "中国新闻";
+        int type = 1;
         String[] words = entry.getValue().split(";");
         String key = entry.getKey().split(";")[0];
         for (Element ele : (ArrayList<Element>)tableList) {
             String title = ele.select("li.news_title").select("a").text();
             String time = FormatTime.getTime(
-                    ele.select("li.news_other").text(), "\\d{4}-\\d{2}-\\d{2}");
+                    ele.select("li.news_other").text(), "(\\d{4}-\\d{2}-\\d{2})",1);
             String summary = ele.select("li.news_content").text();
             String url = ele.select("li.news_title").select("a")
                     .attr("href");
-            String content = Page.getAllHtmlContent(url);
-            System.out.println("TIME IS :"+time);
-            System.out.println("type:" + type);
-            System.out.println("title:" + title);
-            System.out.println("content:" + content);
-            System.out.println("url:" + url);
-            System.out.println("time:" + time);
-            System.out.println("summary:" + summary);
-            System.out.println("website:" + website);
-            System.out.println("----------------");
+            String content = summary;
+
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
