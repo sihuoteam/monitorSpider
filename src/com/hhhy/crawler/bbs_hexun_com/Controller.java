@@ -84,7 +84,7 @@ public class Controller extends CtrController {
             try {
                 time = DateFormatUtils.getTime(timeS, "yy-MM-dd HH:mm");
                 System.out.println("转换格式的time: " + time);
-                System.out.println("现在时间time: " + DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"));
+                System.out.println("现在时间time: " + System.currentTimeMillis());
             } catch (ParseException e) {
                 System.out.println(timeS);
             }
