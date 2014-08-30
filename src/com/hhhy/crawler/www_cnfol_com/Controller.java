@@ -2,9 +2,11 @@ package com.hhhy.crawler.www_cnfol_com;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.*;
 
 import com.hhhy.crawler.*;
+import com.hhhy.crawler.util.DateFormatUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,8 +38,11 @@ public class Controller extends CtrController {
 				e.printStackTrace();
 			}
 
-			String html = GetHTML.getHtml("http://so.cnfol.com/cse/search?q="
-					+ transKey + "&s=12596448179979580087", "UTF-8");
+           String html = GetHTML.getHtml("http://so.cnfol.com/cse/search?q="+
+                   transKey+"&s=12596448179979580087&srt=lds&sti=1440&nsid=0","utf-8");
+
+//			String html = GetHTML.getHtml("http://so.cnfol.com/cse/search?q="
+//					+ transKey + "&s=12596448179979580087", "UTF-8");
 
 			html = html.replaceAll("&nbsp;", "");
 			Document document = Jsoup.parse(html);
@@ -45,17 +50,14 @@ public class Controller extends CtrController {
 			/*
 			 * 搜索关键词是否存在
 			 */
-			String flag = document.select("div#wrap").select("div#container")
-					.select("div#center").select("div#results").text();
-			if (flag.equals("抱歉，没有找到")) {
+			Elements elements = document.select("#results").select(".result");
+			if (elements.size()==0) {
 				// Todo ??
 			} else {
-				Elements tableEles = document.select("div#wrap")
-						.select("div#container").select("div#center")
-						.select("div#results").select("div.result");
+
 
 				ArrayList<Element> tableList = new ArrayList<Element>();
-				for (Element ele : tableEles) {
+				for (Element ele : elements) {
 					tableList.add(ele);
 				}
 				parsePages(tableList,entry);
@@ -73,19 +75,30 @@ public class Controller extends CtrController {
         for (Element ele : (ArrayList<Element>) tableList) {
             String title = ele.select("h3.c-title").select("a").text();
             String time = FormatTime.getTime(ele.select("span.c-showurl")
-                    .text(), "(\\d{4}-\\d{2}-\\d{2})",1);
-            time = time==null?FormatTime.getTime(FormatTime.getCurrentFormatTime(), "(\\d{4}-\\d{2}-\\d{2})",1):time;
+                    .text(), "(\\d{4}-\\d{1,2}-\\d{1,2})");
+            if(time==null)continue;
+            long ctime = 0;
+            try {
+                ctime = DateFormatUtils.getTime(time,"yyyy-MM-dd");
+            } catch (ParseException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                System.out.println(time);
+                continue;
+            }
+            if(ctime==0)continue;
+//            time = time==null?FormatTime.getTime(FormatTime.getCurrentFormatTime(), "(\\d{4}-\\d{2}-\\d{2})",1):time;
             String summary = ele.select("div").select("div.c-content")
                     .select("div.c-abstract").text();
             String url = ele.select("h3.c-title").select("a")
                     .attr("href");
             String content = Page.getContent(url, "div#__content",
                     "utf-8");
+//            System.out.println(key+"title:"+title+"time:"+time);
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
 
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
