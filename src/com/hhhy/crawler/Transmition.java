@@ -99,7 +99,7 @@ public class Transmition {
 				&& article.getSummary().length() > 0
 				&& article.getTitle().length() > 0
 				&& article.getUrl().length() > 0) {
-            if(urlFilter.contains(article.getTitle())){
+            if(urlFilter.contains(article.getUrl())){
                 return;
             }else{
                 urlFilter.add(article.getUrl());
