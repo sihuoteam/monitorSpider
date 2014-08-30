@@ -37,6 +37,7 @@ public class Controller extends CtrController {
             Map.Entry<String,String> entry = iterator.next();
             String transKey = "";
             String keyWord = entry.getKey().split(";")[0];
+            System.out.println("keyword:" + keyWord);
 			try {
 				transKey = URLEncoder.encode(keyWord, "gb2312");
 			} catch (UnsupportedEncodingException e) {
@@ -56,6 +57,7 @@ public class Controller extends CtrController {
 			 */
 
 			Elements flag = document.select("div.blk_list").select("div[tid]");
+            if(keyWord.equals("百度")) System.out.println(document.select("div.blk_list").html());
 			if (flag.size() == 0) {
 				// Todo ??
 				System.out.println("nothing to found.....");
@@ -67,6 +69,7 @@ public class Controller extends CtrController {
 				for (Element ele : flag) {
 					tableList.add(ele);
 				}
+                System.out.println("找到页面上的size：" + tableList.size());
 				parsePages(tableList,entry);
 			}
     	}
@@ -81,15 +84,9 @@ public class Controller extends CtrController {
         String key = entry.getKey().split(";")[0];
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("div.il_txt").select("h4.ilt_tit").select("a").text();
-            System.out.println(title);
-//            String time = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            String timeContent = Subutils.getTime(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
-//            System.out.println(ele.select("div.ilt_panel").select("div.fl_left").select("a").text());
-//            System.out.println(ele.select(".fl_left").text());
-//            System.out.println(timeContent);
+
             String timeContent = ele.select(".fl_left").select("a").text();
-            System.out.println(timeContent);
+            System.out.println("页面上找到的时间："+timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
             if(timeS == null || timeS.equals("")){
                 timeS = FormatTime.getTime(timeContent, "今天\\d{2}:\\d{2}");
@@ -110,14 +107,17 @@ public class Controller extends CtrController {
                 }
                 String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
                 if(!timeS.startsWith(time2)) continue;
-                System.out.println("time: " + timeS);
+                System.out.println("今天的时间："+ time2);
+                System.out.println("确认是今天的timeS: " + timeS);
 
                 try {
                     time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm");
+                    System.out.println("格式转化time："+time);
+                    System.out.println("现在时间：" + System.currentTimeMillis());
                 } catch (ParseException e) {
                     System.out.println(timeS);
                 }
-            }
+            }else continue;
 
 
 
@@ -128,6 +128,11 @@ public class Controller extends CtrController {
             if(Transmition.contentFilter(words, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
+                System.out.println("存储的时间："+ time);
+                System.out.println("内容："+ content);
+                System.out.println("存储的时间："+ summary);
+                System.out.println("存储的时间："+ url);
+                System.out.println("存储的时间："+ title);
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }
