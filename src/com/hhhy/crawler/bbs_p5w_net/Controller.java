@@ -34,6 +34,7 @@ public class Controller extends CtrController {
     	while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String keyWord = entry.getKey().split(";")[0];
+            System.out.println("keyword："+keyWord);
     		String transKey = "";
     		try {
     			transKey = URLEncoder.encode(keyWord, "utf-8");
@@ -54,11 +55,13 @@ public class Controller extends CtrController {
     			System.out.println("nothing to found.....");
     		}
     		else{
+//                System.out.println("found");
     			Elements tableEles =  document.select("div.result").select("span#result-items").select("ul").select("li");
     			ArrayList<Element> tableList = new ArrayList<Element>();
     			for(Element ele:tableEles){
     				tableList.add(ele);
-    			}	
+    			}
+                System.out.println("找到页面上的size："+tableEles.size());
     			parsePages(tableList,entry);
     		}
     	}
@@ -73,11 +76,17 @@ public class Controller extends CtrController {
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3.title").select("a").text();
             String timeS = Subutils.getTime(ele.select("p.meta").last().text());
+            System.out.println("页面上找到timeS："+timeS);
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+            System.out.println("今天的时间"+time2);
             if(!timeS.startsWith(time2))continue;
-            System.out.println("time: " + timeS);
+            System.out.println("确认是今天的timeS:"+timeS);
+//            System.out.println("time: " + timeS);
             long time = 0;
-            try {time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");}
+            try {time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
+                System.out.println("格式转化："+time);
+                System.out.println("现在时间time: " + DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss"));
+            }
             catch (ParseException e) {System.out.println(timeS);}
             String summary = ele.select("p.content").text();
             String url = ele.select("h3.title").select("a").attr("href");
@@ -85,7 +94,7 @@ public class Controller extends CtrController {
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, summary, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                System.out.println(time);
+                System.out.println("存储时间："+time);
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
