@@ -42,7 +42,7 @@ public class Controller extends CtrController {
       } catch (UnsupportedEncodingException e) {
         e.printStackTrace();
       }
-      String html = GetHTML.getHtml("http://news.baidu.com/ns?word="+transKey+"&tn=news&from=news&cl=2&rn=20&ct=1&clk=sortbytime","utf-8");
+      String html = GetHTML.getHtml("http://news.baidu.com/ns?word="+transKey+"&tn=news&from=news&cl=2&rn=20&ct=0&clk=sortbytime","utf-8");
       html = html.replaceAll("&nbsp;", "");
 
       Document document = Jsoup.parse(html);
