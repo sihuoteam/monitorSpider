@@ -73,12 +73,12 @@ public class Controller extends CtrController {
         String key = entry.getKey().split(";")[0];
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3.title").select("a").text();
-            String time = Subutils.getTime(ele.select("p.meta").text());
+            String time = FormatTime.getTime(ele.select("p.meta").text(),"(\\d{4}-\\d{2}-\\d{2})",1);
             String summary = ele.select("p.content").text();
             String url = ele.select("h3.title").select("a").attr("href");
             String content = Page.getContent(url, "div.pct", "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
+            if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));

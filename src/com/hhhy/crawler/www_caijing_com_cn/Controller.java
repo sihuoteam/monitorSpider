@@ -76,12 +76,11 @@ public class Controller extends CtrController{
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("a").text();
             String time = FormatTime.getTime(ele.select("span").text(),"\\d{4}-\\d{2}-\\d{2}",1);
-//            String time = Subutils.getTime(ele.select("span").text());
             String summary = ele.select("p").text();
             String url = ele.select("a").attr("href");
             String content = Page.getContent(url,"div#the_content","UTF-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words, content, key, FNum) && Transmition.timeFilter(time)){
+            if(Transmition.contentFilter(words,summary, content, key, FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));

@@ -20,25 +20,24 @@ public class Transmition {
     private static Set<String> urlFilter = new HashSet<String>();
     private static long lastUpdate = System.currentTimeMillis();
 
-    public static boolean contentFilter(String[] words,String content,String key,ArrayList<Integer> FNum){
-
+    public static boolean contentFilter(String[] words,String summary,String content,String key,ArrayList<Integer> FNum){
+        content+=summary;
         FNum.add(0);
         if(words!=null && words[0].length()>0){
             int findNum = 0;
             for(String word:words){
-                if(content.contains(word))
+                if(content.contains(word) )
                     findNum++;
             }
-            if(content!=null && content.contains(key)){
+            if(content.contains(key)){
                 FNum.set(0,findNum);
                 return true;
-
             }
             else
                 return false;
         }
         else{
-            if(content!=null && content.contains(key)){
+            if(content.contains(key)){
                 FNum.set(0,0);
                 return true;
             }
@@ -86,7 +85,7 @@ public class Transmition {
         article.setType(type);
         article.setSummary(summary);
         article.setTime(time);
-        article.setContent(content);
+        article.setContent(content.length()>0?content:summary);
         article.setUrl(url);
         article.setWebsite(website);
         article.setKeyword(keyword);
@@ -97,7 +96,6 @@ public class Transmition {
             // TODO: should sync
 	public static  void transmit(Article article) {
 		if (article!=null
-				&& article.getContent().length() > 0
 				&& article.getSummary().length() > 0
 				&& article.getTitle().length() > 0
 				&& article.getUrl().length() > 0) {

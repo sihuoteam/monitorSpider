@@ -86,13 +86,13 @@ public class Controller extends CtrController{
             i++;
             Element ele3 = (Element) tableList.get(i);
 
-            String time = FormatTime.getTime(ele3.select("td.searchBotton").text(), "\\d{4}-\\d{2}-\\d{2}");
+            String time = FormatTime.getTime(ele3.select("td.searchBotton").text(), "(\\d{4}-\\d{2}-\\d{2})",1);
             String summary = ele2.select("td.searchMain").text();
             String url = ele1.select("td.searchTitle").select("a").first().attr("href");
 
             String content = Page.getContent(url, "div#doc", "utf-8");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,content,key,FNum) && Transmition.timeFilter(time)){
+            if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
