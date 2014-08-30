@@ -57,6 +57,7 @@ public class Crawler extends TimerTask {
             }
         }
         int blankTime = keyWords.size()*30*3000;
+        MyLog.logINFO("keywords:"+keyWords);
 
         MyLog.logINFO("blankTime:"+blankTime);
 		if(crawlList.size()==0){
