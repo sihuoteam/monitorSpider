@@ -67,7 +67,7 @@ public class Controller extends CtrController {
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("div.newsList").select("td").select("div.T1").text();
             String time = FormatTime.getTime(ele.select("div.newsList").select("td>div").text(), "(\\d{4}-\\d{2}-\\d{2})", 1);
-            if(time == null && (ele.select("div.newsList").select("td>div").last().text().contains("小时前")|| ele.select("div.newslist").select("td>div").last().text().contains("天前")))
+            if(time == null && (ele.select("div.newsList").select("td>div").last().text().contains("小时前")|| ele.select("div.newslist").select("td>div").last().text().contains("分钟前")))
                 time = FormatTime.getTime(FormatTime.getCurrentFormatTime(),"(\\d+-\\d+-\\d+)",1);
             String summary = ele.select("p").text();
             String url = ele.select("div.newsList").select("td").select("div.T1").select("a").attr("href");
