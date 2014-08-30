@@ -70,7 +70,7 @@ public class Controller extends CtrController {
                     String time = src.substring(src.length() - 10);
                     String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
                     if (!time.startsWith(time2)) continue;
-                    System.out.println("time: " + time);
+//                    System.out.println("time: " + time);
                     long ctime = 0;
                     try {
                       ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd");
@@ -78,9 +78,9 @@ public class Controller extends CtrController {
                       e.printStackTrace();
                       continue;
                     }
-                    System.out.println("搜狗time: " + ctime);
+//                    System.out.println("搜狗time: " + ctime);
                     int type = 1;
-                    Article article = Transmition.getArticle(type, title, summary, url, System.currentTimeMillis(), summary, "搜狗新闻搜索", keyWord, 1);
+                    Article article = Transmition.getArticle(type, title, summary, url, System.currentTimeMillis(), summary, "新华网", keyWord, 1);
                     Transmition.transmit(article);
                   }
                 }
