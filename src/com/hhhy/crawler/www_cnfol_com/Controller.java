@@ -86,6 +86,10 @@ public class Controller extends CtrController {
                 continue;
             }
             if(ctime==0)continue;
+            time  = DateFormatUtils.formatTime(ctime,"yyyy-MM-dd");
+            String today = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+//            System.out.println("format: "+time+" today"+ today);
+            if(!today.equals(time))continue;
 //            time = time==null?FormatTime.getTime(FormatTime.getCurrentFormatTime(), "(\\d{4}-\\d{2}-\\d{2})",1):time;
             String summary = ele.select("div").select("div.c-content")
                     .select("div.c-abstract").text();
@@ -97,10 +101,10 @@ public class Controller extends CtrController {
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
 
-            if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
+            if(Transmition.contentFilter(words,summary,content,key,FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, System.currentTimeMillis(), summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }

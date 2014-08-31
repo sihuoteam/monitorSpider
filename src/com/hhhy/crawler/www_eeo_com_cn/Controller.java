@@ -2,6 +2,7 @@ package com.hhhy.crawler.www_eeo_com_cn;
 
 import com.hhhy.crawler.*;
 
+import com.hhhy.crawler.util.DateFormatUtils;
 import com.hhhy.crawler.util.FormatTime;
 import com.hhhy.crawler.util.GetHTML;
 import com.hhhy.db.beans.Article;
@@ -12,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -47,6 +49,7 @@ public class Controller extends CtrController{
                 System.out.println("没找到");
             }
             else{
+                System.out.println("size: "+lis.size());
                 ArrayList<Element> tableList = new ArrayList<Element>();
                 for(Element ele:lis){
                     tableList.add(ele);
@@ -72,20 +75,37 @@ public class Controller extends CtrController{
 
             String summary = li2.text();
             String content = Page.getContent(url,"div#text_content","utf-8");
-            System.out.println("TIME IS :"+time);
-            System.out.println("type:" + type);
-            System.out.println("title:" + title);
-            System.out.println("content:" + content);
-            System.out.println("url:" + url);
+//            System.out.println("TIME IS :"+time);
+//            System.out.println("type:" + type);
+//            System.out.println("title:" + title);
+//            System.out.println("content:" + content);
+//            System.out.println("url:" + url);
             System.out.println("time:" + time);
-            System.out.println("summary:" + summary);
-            System.out.println("website:" + website);
-            System.out.println("----------------");
+//            System.out.println("summary:" + summary);
+//            System.out.println("website:" + website);
+//            System.out.println("----------------");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-            if(Transmition.contentFilter(words,summary, content, key, FNum) && Transmition.timeFilter(time)){
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
+//            time="2014-8-31";
+            long ctime = 0;
+            try {
+                ctime = DateFormatUtils.getTime(time,"yyyy-MM-dd");
+            } catch (ParseException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                continue;
+            }
+            time  = DateFormatUtils.formatTime(ctime,"yyyy-MM-dd");
+
+            String today = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+            System.out.println("format: "+time+" today"+ today);
+            if(!today.equals(time))continue;
+
+//            System.out.println("current: "+System.currentTimeMillis()+ " act: "+ctime);
+            if(System.currentTimeMillis()-ctime>24*60*60*1000)continue;
+            if(Transmition.contentFilter(words,summary, content, key, FNum)){
+//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+//                System.out.println("send "+key+" "+title);
+                Article article = Transmition.getArticle(type, title, content, url, ctime, summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }
