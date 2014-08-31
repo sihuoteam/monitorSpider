@@ -18,6 +18,7 @@ import com.hhhy.db.beans.Article;
 
 public class Transmition {
     private static Set<String> urlFilter = new HashSet<String>();
+    private static Set<String> titleFilter = new HashSet<String>();
     private static long lastUpdate = System.currentTimeMillis();
 
     public static boolean contentFilter(String[] words,String summary,String content,String key,ArrayList<Integer> FNum){
@@ -99,14 +100,16 @@ public class Transmition {
 				&& article.getSummary().length() > 0
 				&& article.getTitle().length() > 0
 				&& article.getUrl().length() > 0) {
-            if(urlFilter.contains(article.getUrl())){
+            if(urlFilter.contains(article.getUrl()) || titleFilter.contains(article.getTitle())){
                 return;
             }else{
                 urlFilter.add(article.getUrl());
+                titleFilter.add(article.getTitle());
             }
 
             if(System.currentTimeMillis()-lastUpdate>24*60*60*1000){
                 urlFilter.clear();
+                titleFilter.clear();
                 lastUpdate = System.currentTimeMillis();
             }
 			String jsonArticleStr = JsonUtils.toJson(article);

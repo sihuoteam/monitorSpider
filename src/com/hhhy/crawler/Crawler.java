@@ -28,6 +28,8 @@ public class Crawler extends TimerTask {
             ThriftClient client = ThriftClient.getInstance();
             try {
                 keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), HashMap.class);
+                MyLog.logINFO("keyWords has been set again......");
+                MyLog.logINFO("keyWords is :"+keyWords);
             } catch (TException e) {
                 e.printStackTrace();
             }
@@ -36,7 +38,7 @@ public class Crawler extends TimerTask {
 
     public Crawler() {
         Timer timer = new Timer();
-        timer.schedule(new KWChange(),0,30*60*1000);
+        timer.schedule(new KWChange(),0,5*60*1000);
     }
 
 	LinkedList<Timer> crawlList= null;
