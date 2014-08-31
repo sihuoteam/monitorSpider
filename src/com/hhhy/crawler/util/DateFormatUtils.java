@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 public class DateFormatUtils {
     private static final Logger logger = Logger
             .getLogger(DateFormatUtils.class);
-    public static final String yyyyMMddhhmmss = "yyyy-MM-dd hh:mm:ss";
+    public static final String yyyyMMddhhmmss = "yyyy-MM-dd HH:mm:ss";
     public static final String yyyyMMdd = "yyyy-MM-dd";
 
     public static String formatTime(final long time, final String pattern) {

@@ -68,7 +68,7 @@ public class Controller extends CtrController {
             int type = 1;
             long ctime = 0;
             try {
-              ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm:ss");
+              ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd HH:mm:ss");
             } catch (ParseException e) {
               e.printStackTrace();
               continue;
