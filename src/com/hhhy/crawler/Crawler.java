@@ -14,7 +14,7 @@ import com.hhhy.web.client.thrift.ThriftClient;
 public class Crawler extends TimerTask {
 	static {
 		try {
-			ThriftClient.init("10.1.1.31", 12306);
+			ThriftClient.init("localhost", 12306);
 		} catch (TTransportException e) {
 			e.printStackTrace();
 		}
