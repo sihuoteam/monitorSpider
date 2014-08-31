@@ -53,8 +53,8 @@ public class Controller extends CtrController {
                 System.out.println("未搜到");
             } else {
                 for(Element ele:flag){
-                    String url = ele.select("a").attr("href");
-                  String title = ele.select("a").text();
+                    String url = ele.select("h3").select("a").attr("href");
+                  String title = ele.select("h3").select("a").text();
                   String src = ele.select("cite").text();
                   String summary =ele.select(".thumb_news").text();
                   if(title.contains(keyWord) || summary.contains(keyWord)) {
@@ -63,7 +63,7 @@ public class Controller extends CtrController {
                     String time = src.substring(src.length() - 16);
                     String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
                     if (!time.startsWith(time2)) continue;
-                    System.out.println("time: " + time);
+//                    System.out.println("time: " + time);
                     long ctime = 0;
                     try {
                       ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm");
@@ -71,7 +71,7 @@ public class Controller extends CtrController {
                       e.printStackTrace();
                       continue;
                     }
-                    System.out.println("搜狗time: " + ctime);
+                    System.out.println("搜狗title: " + title);
                     int type = 1;
                     Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, "搜狗新闻搜索", keyWord, 1);
                     Transmition.transmit(article);

@@ -54,12 +54,12 @@ public class Controller extends CtrController {
       } else {
         List<Element> tableList = new ArrayList<Element>();
         for(Element ele:flag){
-          String url = ele.select("a").attr("href");
-          String title = ele.select("a").text();
+          String url = ele.select("h3").select("a").attr("href");
+          String title = ele.select("h3").select(".c-title").text();
           String src = ele.select(".c-author").text();
           String summary =ele.select(".c-summary").text();
           if(title.contains(keyWord) || summary.contains(keyWord)) {
-            System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
+//            System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
             if (src.length() < 19) continue;
             String time = src.substring(src.length() - 19);
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
@@ -73,7 +73,7 @@ public class Controller extends CtrController {
               e.printStackTrace();
               continue;
             }
-            System.out.println("百度time: " + ctime);
+            System.out.println("百度title: " + title);
             Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, "百度新闻搜索", keyWord, 1);
             Transmition.transmit(article);
           }
