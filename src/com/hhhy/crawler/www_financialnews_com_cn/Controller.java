@@ -21,7 +21,7 @@ public class Controller extends CtrController{
 
             HashMap<String,String> param = new HashMap<String, String>();
             param.put("searchword",keyWord);
-            param.put("channelid","282695");
+            param.put("channelid","234439");
             HashMap<String,String> headParam = new HashMap<String, String>();
             headParam.put("Referer","http://220.194.54.119:8080/was5/web/search");
             String html = GetHTML.postHtml("http://220.194.54.119:8080/was5/web/search","UTF-8",param,headParam);
@@ -52,7 +52,7 @@ public class Controller extends CtrController{
         for (Element li : (ArrayList<Element>) tableList) {
             String title = li.select("div").first().text();
 
-            String time = FormatTime.getTime(li.select("div").text(), "(\\d{4}\\.\\d{2}\\.\\d{2})", 1);
+            String time = FormatTime.getTime(li.select("div").text(), "(\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", 1);
             String summary = li.select("div").last().text();
             String url = li.select("div").first().select("a").attr("href");
             String content = Page.getContent(url, "div.TRS_Editor", "utf-8");
@@ -66,8 +66,5 @@ public class Controller extends CtrController{
                 Transmition.transmit(article);
             }
         }
-    }
-
-    public Controller() {
     }
 }

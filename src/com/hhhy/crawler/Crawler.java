@@ -38,7 +38,7 @@ public class Crawler extends TimerTask {
 
     public Crawler() {
         Timer timer = new Timer();
-        timer.schedule(new KWChange(),0,5*60*1000);
+        timer.schedule(new KWChange(),0,30*60*1000);
     }
 
 	LinkedList<Timer> crawlList= null;
