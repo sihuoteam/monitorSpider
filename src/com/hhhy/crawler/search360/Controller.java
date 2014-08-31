@@ -65,7 +65,7 @@ public class Controller extends CtrController {
         int type = 2;
         String website = "360搜索";
         for(Element ele:(ArrayList<Element>)tableList){
-            String title = ele.select("h3").text();
+            String title = ele.select("h3").select("a").text();
             String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"),"(\\d+-\\d+-\\d+)",1);
             String summary = ele.select("p").text();
             String url = ele.select("h3").select("a").attr("href");
