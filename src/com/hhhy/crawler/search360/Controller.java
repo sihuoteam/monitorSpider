@@ -36,7 +36,7 @@ public class Controller extends CtrController {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            String html = GetHTML.getHtml("http://news.so.com/ns?q="+transKey+"&src=newhome", "utf-8");
+            String html = GetHTML.getHtml("http://news.so.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn=1", "utf-8");
 
             html = html.replaceAll("&nbsp;","");
             Document document = Jsoup.parse(html);
