@@ -92,6 +92,22 @@ public class FormatTime {
         }
         return null;
     }
+    public static long getTime_Long(String txt,String regex,int group,String timeFormat){
+        Pattern pattern = Pattern.compile(regex,Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(txt);
+        String time = null;
+        if(matcher.find()){
+            time = matcher.group(group);
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(timeFormat);
+        try {
+            long timeLong = simpleDateFormat.parse(time).getTime();
+            return timeLong;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
     public static void main(String[] args){
       //  System.out.println(getTime("http://news.hebei.com.cn/system/2014/07/14/013669577.shtml    &nbsp2014-07-14", "\\d{4}-\\d{2}-\\d{2}"));
         System.out.println(isAfterToday("2014-07-14 00:00:00"));
