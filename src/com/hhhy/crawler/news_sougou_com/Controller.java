@@ -60,6 +60,8 @@ public class Controller extends CtrController {
                   if(title.contains(keyWord) || summary.contains(keyWord)) {
 //                    System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
                     if (src.length() < 16) continue;
+                    String source = ele.select("cite").attr("title");
+                    System.out.println("source: "+source+" "+keyWord);
                     String time = src.substring(src.length() - 16);
                     String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
                     if (!time.startsWith(time2)) continue;
@@ -73,7 +75,7 @@ public class Controller extends CtrController {
                     }
                     System.out.println("搜狗title: " + title);
                     int type = 1;
-                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, "搜狗新闻搜索", keyWord, 1);
+                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
                     Transmition.transmit(article);
                   }
                 }
