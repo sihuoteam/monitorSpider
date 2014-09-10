@@ -67,15 +67,19 @@ public class Controller extends CtrController {
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3").select("a").text();
             String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"),"(\\d+-\\d+-\\d+)",1);
+            if(time==null)
+                continue;
             String summary = ele.select("p").text();
             String url = ele.select("h3").select("a").attr("href");
-            String content = Page.getAllHtmlContent(url);
+            String content = summary;
+            String source = ele.select("h3").select("span").select("em").text();
+            if(source==null)
+                source = website;
             System.out.println("TIME IS :"+time);
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
-                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                //调接口~~~~~
-                Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
+                Transmition.showDebug(type, title, content, url, time, summary, source, FNum.get(0));
+                Article article = Transmition.getArticle(type, title, content, url, time, summary, source,key, FNum.get(0));
                 Transmition.transmit(article);
             }
 
