@@ -26,13 +26,13 @@ import java.util.regex.Pattern;
 public class Crawler {
     static {
         try {
-            ThriftClient.init("localhost",3306);
+            ThriftClient.init("10.1.1.31",12306);
         } catch (TTransportException e) {
             e.printStackTrace();
         }
     }
-   /* Crawler(){
-        ThriftClient client = ThriftClient.getInstance();
+    public Crawler(){
+        /*ThriftClient client = ThriftClient.getInstance();
 
         String str = null;
         try {
@@ -41,33 +41,48 @@ public class Crawler {
             e.printStackTrace();
         }
         while(true){
-            while(str==null || str.split(";").length==0){
+            while(str==null || str.split(";").length==0 ||str.equals("")){
                 try {
-                    Thread.sleep(1000*60*5);
+                    Thread.sleep(1000*5);
+                    str = client.getKeywordHistory();
+                    System.out.println("去一次");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
-                try {
-                    str = client.getKeywordHistory();
                 } catch (TException e) {
                     e.printStackTrace();
                 }
             }
+            System.out.println("chulaila");
             String[] args = str.split(";");
             PropertiesUtil.loadFile("spiderConf.properties");
             String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
             crawl(args,sites);
-        }
-    }*/
+            try {
+                str = client.getKeywordHistory();
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+        }*/
+        String[] aaa = new String[1];
+        aaa[0]="百度:1356969600000:1409587199999";
+        PropertiesUtil.loadFile("spiderConf.properties");
+        String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
+        crawl(aaa, sites);
+    }
+
     public void crawl(String[] args,String[] sites){
         for(String arg:args){
+            System.out.println(arg);
             for(String site:sites){
+                System.out.println(site);
                 String keyWord = arg.split(":")[0];
                 long beginTime = Long.parseLong(arg.split(":")[1]);
                 long endTime = Long.parseLong(arg.split(":")[2]);
 
                 parseBoardBaidu(keyWord,site, beginTime, endTime);
                 parseBoardSougou(keyWord,site,beginTime,endTime);
+                parseChinaso(keyWord,site,beginTime,endTime);
+                parseBoard360(keyWord,site,beginTime,endTime);
             }
 
         }
@@ -141,6 +156,8 @@ public class Crawler {
         boolean ff = true;
         while(ff){
             page++;
+            if(page>100)
+                break;
             String html = GetHTML.getHtml("http://news.sogou.com/news?dp=1&mode=1&page="+page+"&time=0&query="+transKey+"&sort=1","GBK");
             html = html.replaceAll("&nbsp;", "");
             Document document = Jsoup.parse(html);
@@ -155,6 +172,7 @@ public class Crawler {
                     String title = ele.select("h3").select("a").text();
                     String src = ele.select("cite").text();
                     String summary =ele.select(".thumb_news").text();
+                    System.out.println(summary);
                     if(title.contains(keyWord) || summary.contains(keyWord)) {
                         if (src.length() < 16) continue;
                         String source = ele.select("cite").attr("title");
@@ -191,7 +209,7 @@ public class Crawler {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        int page=28;
+        int page=0;
         boolean ff = true;
         while(ff){
             page++;
@@ -281,7 +299,7 @@ public class Crawler {
                 String website = "360搜索";
                 for(Element ele:flag){
                     String title = ele.select("h3").select("a").text();
-                    String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"),"(\\d+-\\d+-\\d+)",1);
+                    String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"), "(\\d+-\\d+-\\d+)", 1);
                     String summary = ele.select("p").text();
                     String url = ele.select("h3").select("a").attr("href");
                     String content = summary;
@@ -298,10 +316,10 @@ public class Crawler {
                         e.printStackTrace();
                     }
                     if(ctime>=beginTime && ctime<endTime){
-                        if(Transmition.contentFilter(null,summary,content,keyWord,FNum) && Transmition.timeFilter(time)){
+                        if(Transmition.contentFilter(null,summary,content,keyWord,FNum)){
                             Transmition.showDebug(type, title, content, url, time, summary, source, FNum.get(0));
                             //调接口~~~~~
-                            Article article = Transmition.getArticle(type, title, content, url, time, summary, source,keyWord, FNum.get(0));
+                            Article article = Transmition.getArticle(type, title, content, url, ctime, summary, source,keyWord, FNum.get(0));
                             Transmition.transmit(article);
                         }
                     }else{
@@ -313,12 +331,7 @@ public class Crawler {
         }
     }
     public static void main(String[] args) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        long end = simpleDateFormat.parse("2014-09-10 23:00").getTime();
-        long begin = simpleDateFormat.parse("2013-01-01 23:00").getTime();
-        String gu = "家居";
-        Crawler crawler = new Crawler();
-        crawler.parseBoard360(gu, "hexun.com", begin, end);
 
+        new Crawler();
     }
 }

@@ -2,6 +2,7 @@ package com.hhhy.crawler;
 
 import java.util.*;
 
+import com.hhhy.crawler.commenSpider.CommenSpider;
 import com.hhhy.crawler.util.JsonUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
@@ -10,24 +11,24 @@ import com.hhhy.crawler.util.MyLog;
 import com.hhhy.crawler.util.PropertiesUtil;
 import com.hhhy.web.client.thrift.ThriftClient;
 
-
 public class Crawler extends TimerTask {
 	static {
 		try {
-			ThriftClient.init("localhost", 12306);
+			ThriftClient.init("10.1.1.31", 12306);
 		} catch (TTransportException e) {
 			e.printStackTrace();
 		}
 	}
     public static HashMap<String,String> keyWords = null;
     String[] webs;
-
+    public static String newSites = null;
     class KWChange extends TimerTask{
         @Override
         public void run() {
             ThriftClient client = ThriftClient.getInstance();
             try {
                 keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), HashMap.class);
+                newSites = client.getUrls();
                 MyLog.logINFO("keyWords has been set again......");
                 MyLog.logINFO("keyWords is :"+keyWords);
             } catch (TException e) {
@@ -68,6 +69,9 @@ public class Crawler extends TimerTask {
 				timer.schedule(new Crawl(webName),0,blankTime);
 				crawlList.add(timer);
 			}
+            Timer timer = new Timer();
+            timer.schedule(new CommenSpider(),0,blankTime);
+            crawlList.add(timer);
 		}
 		else{
 			for(Timer timer:crawlList){
@@ -79,11 +83,20 @@ public class Crawler extends TimerTask {
 				timer.schedule(new Crawl(webName),0,blankTime);
 				crawlList.add(timer);
 			}
+            Timer timer = new Timer();
+            timer.schedule(new CommenSpider(),0,blankTime);
+            crawlList.add(timer);
 		}
 	}
 	public static void main(String[] args) throws TException {
 		Crawler crawler = new Crawler();
 		Timer timer = new Timer();
 		timer.schedule(crawler, 0, 24 * 60 * 60 * 1000);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new com.hhhy.historySpider.Crawler();
 	}
 }
