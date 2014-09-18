@@ -24,15 +24,9 @@ import java.util.regex.Pattern;
 
 
 public class Crawler {
-    static {
-        try {
-            ThriftClient.init("10.1.1.31",12306);
-        } catch (TTransportException e) {
-            e.printStackTrace();
-        }
-    }
+
     public Crawler(){
-        /*ThriftClient client = ThriftClient.getInstance();
+        ThriftClient client = ThriftClient.getInstance();
 
         String str = null;
         try {
@@ -45,58 +39,56 @@ public class Crawler {
                 try {
                     Thread.sleep(1000*5);
                     str = client.getKeywordHistory();
-                    System.out.println("去一次");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (TException e) {
                     e.printStackTrace();
                 }
             }
-            System.out.println("chulaila");
             String[] args = str.split(";");
             PropertiesUtil.loadFile("spiderConf.properties");
             String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
             crawl(args,sites);
+            System.out.println("this role is over");
             try {
                 str = client.getKeywordHistory();
             } catch (TException e) {
                 e.printStackTrace();
             }
-        }*/
-        String[] aaa = new String[1];
-        aaa[0]="百度:1356969600000:1409587199999";
+        }
+        /*String[] aaa = new String[1];
+        aaa[0]="李彦宏:1356969600000:1409587199999";
         PropertiesUtil.loadFile("spiderConf.properties");
         String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
-        crawl(aaa, sites);
+        crawl(aaa, sites);*/
     }
 
     public void crawl(String[] args,String[] sites){
+        System.out.println("jinrucrawlcishu");
         for(String arg:args){
-            System.out.println(arg);
             for(String site:sites){
-                System.out.println(site);
                 String keyWord = arg.split(":")[0];
-                long beginTime = Long.parseLong(arg.split(":")[1]);
-                long endTime = Long.parseLong(arg.split(":")[2]);
+                String additionWord = arg.split(":")[1];
+                long beginTime = Long.parseLong(arg.split(":")[2]);
+                long endTime = Long.parseLong(arg.split(":")[3]);
 
-                parseBoardBaidu(keyWord,site, beginTime, endTime);
-                parseBoardSougou(keyWord,site,beginTime,endTime);
-                parseChinaso(keyWord,site,beginTime,endTime);
-                parseBoard360(keyWord,site,beginTime,endTime);
+                parseBoardBaidu(keyWord,additionWord,site, beginTime, endTime);
+                parseBoardSougou(keyWord,additionWord,site,beginTime,endTime);
+                parseChinaso(keyWord,additionWord,site,beginTime,endTime);
+                parseBoard360(keyWord,additionWord,site,beginTime,endTime);
             }
-
         }
     }
 
-    public void parseBoardBaidu(String keyWord,String site,long beginTime,long endTime) {
-            String transKey = "";
-            try {
-                transKey = URLEncoder.encode(keyWord+" site:"+site,"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+    public void parseBoardBaidu(String keyWord, String additionWord,String site,long beginTime,long endTime) {
+        String transKey = "";
+        try {
+            transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-        int pn = -1;
+        int pn = 0;
 
         boolean ff = true;
         while(ff){
@@ -112,16 +104,17 @@ public class Crawler {
                 ff=false;
             } else {
                 for(Element ele:flag){
+
                     String url = ele.select("h3").select("a").attr("href");
                     String title = ele.select("h3").select(".c-title").text();
                     String src = ele.select(".c-author").text();
                     String summary =ele.select(".c-summary").text();
+
+
                     if(title.contains(keyWord) || summary.contains(keyWord)) {
                         if (src.length() < 19) continue;
                         String time = src.substring(src.length() - 19);
                         String source = src.substring(0,src.length() - 19).trim();
-                        String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-                        if(!time.startsWith(time2))continue;
                         int type = 1;
                         long ctime = 0;
                         try {
@@ -130,24 +123,48 @@ public class Crawler {
                             e.printStackTrace();
                             continue;
                         }
-                        Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,1);
+                        System.out.println("baidu::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
+
                         if(ctime>=beginTime && ctime<=endTime){
-                            Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
-                            Transmition.transmit(article);
+                            if(!additionWord.equals("")){
+                                String[] adds = new String[1];
+                                adds[0] = additionWord;
+                                ArrayList<Integer> num = new ArrayList<Integer>();
+                                if(Transmition.contentFilter(adds, summary, summary, keyWord, num)){
+                                    Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,num.get(0));
+                                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, num.get(0));
+                                    Transmition.transmit(article);
+                                }
+                            }
+                            else{
+                                Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,0);
+                                Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 0);
+                                Transmition.transmit(article);
+                            }
+
                         }
-                        else{
-                            ff = false;
+                        if(ctime<beginTime){
+                            ff=false;
                             break;
                         }
                     }
                 }
             }
+            if(document.select("p#page").size()!=0 && document.select("p#page").select("a").size()!=0){
+                String next = document.select("p#page").select("a").last().text();
+                if(!next.contains("下一页")){
+                    break;
+                }
+            }
+            else
+                break;
+
         }
     }
-    public void parseBoardSougou(String keyWord,String site,long beginTime,long endTime) {
+    public void parseBoardSougou(String keyWord,String additionWord,String site,long beginTime,long endTime) {
         String transKey = "";
         try {
-            transKey = URLEncoder.encode(keyWord+" site:"+site,"UTF-8");
+            transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -156,11 +173,14 @@ public class Crawler {
         boolean ff = true;
         while(ff){
             page++;
-            if(page>100)
-                break;
+
             String html = GetHTML.getHtml("http://news.sogou.com/news?dp=1&mode=1&page="+page+"&time=0&query="+transKey+"&sort=1","GBK");
             html = html.replaceAll("&nbsp;", "");
             Document document = Jsoup.parse(html);
+
+
+
+
 
             Elements flag = document.select(".results").select(".rb");
             if (flag.size()==0) {
@@ -172,13 +192,11 @@ public class Crawler {
                     String title = ele.select("h3").select("a").text();
                     String src = ele.select("cite").text();
                     String summary =ele.select(".thumb_news").text();
-                    System.out.println(summary);
+
                     if(title.contains(keyWord) || summary.contains(keyWord)) {
                         if (src.length() < 16) continue;
                         String source = ele.select("cite").attr("title");
                         String time = src.substring(src.length() - 16);
-                        String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-                        if (!time.startsWith(time2)) continue;
                         long ctime = 0;
                         try {
                             ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm");
@@ -187,28 +205,52 @@ public class Crawler {
                             continue;
                         }
                         int type = 1;
-                        Transmition.showDebug(type, title, summary, url, "" + ctime, summary, source, 1);
+                        System.out.println("sougou::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
+
                         if(ctime>=beginTime && ctime<=endTime){
-                            Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
-                            Transmition.transmit(article);
+                            if(!additionWord.equals("")){
+                                String[] adds = new String[1];
+                                adds[0] = additionWord;
+                                ArrayList<Integer> num = new ArrayList<Integer>();
+                                if(Transmition.contentFilter(adds, summary, summary, keyWord, num)){
+                                    Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,num.get(0));
+                                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, num.get(0));
+                                    Transmition.transmit(article);
+                                }
+                            }
+                            else{
+                                Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,0);
+                                Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 0);
+                                Transmition.transmit(article);
+                            }
+
                         }
-                        else{
+                        if(ctime<beginTime){
                             ff=false;
                             break;
                         }
                     }
                 }
             }
+            if(document.select("div#pagebar_container").size()!=0 && document.select("div#pagebar_container").select("a").size()!=0){
+                String next = document.select("div#pagebar_container").select("a").last().text();
+                if(!next.contains("下一页")){
+                    break;
+                }
+            }
+            else
+                break;
+
         }
 
     }
-    public void parseChinaso(String keyWord,String site,long beginTime,long endTime){
-            String transKey = "";
-            try {
-                transKey = URLEncoder.encode(keyWord+" site:"+site, "gb2312");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+    public void parseChinaso(String keyWord,String additionWord, String site,long beginTime,long endTime){
+        String transKey = "";
+        try {
+            transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site, "gb2312");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         int page=0;
         boolean ff = true;
         while(ff){
@@ -220,6 +262,9 @@ public class Crawler {
     	        /*
     	        搜索关键词是否存在
     	         */
+
+
+
             Elements flag = document.select("ol.results").select("li");
             if(flag.size()==0){
                 //TODO ??
@@ -239,7 +284,6 @@ public class Crawler {
                     long ctime = 0;
                     try {
                         ctime = DateFormatUtils.getTime(time, DateFormatUtils.yyyyMMdd);
-                        System.out.println("time is "+time+"   "+ctime+"   "+ele.select("div.newsList").select("td>div").text());
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -252,28 +296,47 @@ public class Crawler {
                     String summary = ele.select("p").text();
                     String url = ele.select("div.newsList").select("td").select("div.T1").select("a").attr("href");
                     if(url.contains("http")){
-                        String content = summary;
-                        ArrayList<Integer> FNum = new ArrayList<Integer>();
+                        System.out.println("chinaso::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
+
                         if(ctime>=beginTime && ctime<=endTime){
-                            if(Transmition.contentFilter(null,summary,content,keyWord,FNum)){
-                                Transmition.showDebug(type, title, content, url, time, summary, source, FNum.get(0));
-                                //调接口~~~~~
-                                Article article = Transmition.getArticle(type, title, content, url, ctime, summary, source,keyWord, FNum.get(0));
+                            if(!additionWord.equals("")){
+                                String[] adds = new String[1];
+                                adds[0] = additionWord;
+                                ArrayList<Integer> num = new ArrayList<Integer>();
+                                if(Transmition.contentFilter(adds, summary, summary, keyWord, num)){
+                                    Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,num.get(0));
+                                    Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, num.get(0));
+                                    Transmition.transmit(article);
+                                }
+                            }
+                            else{
+                                Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,0);
+                                Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 0);
                                 Transmition.transmit(article);
                             }
-                        }else{
+
+                        }
+                        if(ctime<beginTime){
                             ff=false;
                             break;
                         }
                     }
                 }
             }
+            if(document.select("div.pg").size()!=0 && document.select("div.pg").select("a").size()!=0){
+                String next = document.select("div.pg").select("a").last().text();
+                if(!next.contains("下一页")){
+                    break;
+                }
+            }
+            else
+                break;
         }
     }
-    public void parseBoard360(String keyWord,String site,long beginTime,long endTime){
+    public void parseBoard360(String keyWord,String additionWord,String site,long beginTime,long endTime){
             String transKey = "";
             try {
-                transKey = URLEncoder.encode(keyWord+" site:"+site, "gb2312");
+                transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site, "gb2312");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -288,6 +351,8 @@ public class Crawler {
     	        /*
     	        搜索关键词是否存在
     	         */
+
+
             Elements flag = document.select("ul#news").select("li");
             if(flag.size()==0){
                 //TODO ??
@@ -302,11 +367,9 @@ public class Crawler {
                     String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"), "(\\d+-\\d+-\\d+)", 1);
                     String summary = ele.select("p").text();
                     String url = ele.select("h3").select("a").attr("href");
-                    String content = summary;
                     String source = ele.select("h3").select("span").select("em").text();
                     if(source==null)
                         source=website;
-                    ArrayList<Integer> FNum = new ArrayList<Integer>();
                     if(time==null)
                         continue;
                     long ctime = 0;
@@ -315,23 +378,43 @@ public class Crawler {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    if(ctime>=beginTime && ctime<endTime){
-                        if(Transmition.contentFilter(null,summary,content,keyWord,FNum)){
-                            Transmition.showDebug(type, title, content, url, time, summary, source, FNum.get(0));
-                            //调接口~~~~~
-                            Article article = Transmition.getArticle(type, title, content, url, ctime, summary, source,keyWord, FNum.get(0));
+                    System.out.println("360::::" + "ctime:" + ctime + "  " + title.contains(keyWord) + " " + summary.contains(keyWord) + "title:" + title + "keyword:" + keyWord + "summary:" + summary);
+
+                    if(ctime>=beginTime && ctime<=endTime){
+                        if(!additionWord.equals("")){
+                            String[] adds = new String[1];
+                            adds[0] = additionWord;
+                            ArrayList<Integer> num = new ArrayList<Integer>();
+                            if(Transmition.contentFilter(adds, summary, summary, keyWord, num)){
+                                Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,num.get(0));
+                                Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, num.get(0));
+                                Transmition.transmit(article);
+                            }
+                        }
+                        else{
+                            Transmition.showDebug(type,title,summary,url,""+ctime,summary,source,0);
+                            Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 0);
                             Transmition.transmit(article);
                         }
-                    }else{
+
+                    }
+                    if(ctime<beginTime){
                         ff=false;
                         break;
                     }
                 }
             }
+            if(document.select("div#page").size()!=0 && document.select("div#page").select("a").size()!=0){
+                String next = document.select("div#page").select("a").last().text();
+                if(!next.contains("下一页")){
+                    break;
+                }
+            }
+            else
+                break;
         }
     }
     public static void main(String[] args) throws ParseException {
-
-        new Crawler();
+      new Crawler();
     }
 }
