@@ -30,7 +30,7 @@ public class Transmition {
                 if(content.contains(word) )
                     findNum++;
             }
-            if(content.contains(key)){
+            if(content.contains(key) && findNum>0){
                 FNum.set(0,findNum);
                 return true;
             }
