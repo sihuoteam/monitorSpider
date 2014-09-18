@@ -64,11 +64,11 @@ public class Crawler extends TimerTask {
 
         MyLog.logINFO("blankTime:"+blankTime);
 		if(crawlList.size()==0){
-			/*for(String webName:webs){
+			for(String webName:webs){
 				Timer timer = new Timer();
 				timer.schedule(new Crawl(webName),0,blankTime);
 				crawlList.add(timer);
-			}*/
+			}
             Timer timer = new Timer();
             timer.schedule(new CommenSpider(),0,blankTime);
             crawlList.add(timer);
@@ -78,11 +78,11 @@ public class Crawler extends TimerTask {
 				timer.cancel();
 			}
 			crawlList.clear();
-			/*for(String webName:webs){
+			for(String webName:webs){
 				Timer timer = new Timer();
 				timer.schedule(new Crawl(webName),0,blankTime);
 				crawlList.add(timer);
-			}*/
+			}
             Timer timer = new Timer();
             timer.schedule(new CommenSpider(),0,blankTime);
             crawlList.add(timer);
