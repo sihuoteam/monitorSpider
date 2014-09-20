@@ -57,14 +57,14 @@ public class Controller extends CtrController {
           String url = ele.select("h3").select("a").attr("href");
           String title = ele.select("h3").select(".c-title").text();
           String src = ele.select(".c-author").text();
-          System.out.println("src: "+src);
+//          System.out.println("src: "+src);
           String summary =ele.select(".c-summary").text();
           if(title.contains(keyWord) || summary.contains(keyWord)) {
 //            System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
             if (src.length() < 19) continue;
             String time = src.substring(src.length() - 19);
             String source = src.substring(0,src.length() - 19).trim();
-            System.out.println("src: "+source);
+//            System.out.println("src: "+source);
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
             if(!time.startsWith(time2))continue;
             System.out.println("time: " + time);
@@ -76,9 +76,11 @@ public class Controller extends CtrController {
               e.printStackTrace();
               continue;
             }
-            System.out.println("百度title: " + title);
-            Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
-            Transmition.transmit(article);
+//            System.out.println("百度title: " + title);
+            if(Transmition.contentFilter(entry.getValue().split(";"),summary,summary,keyWord,new ArrayList<Integer>())) {
+              Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
+              Transmition.transmit(article);
+            }
           }
         }
 //                parsePages(tableList,entry);
