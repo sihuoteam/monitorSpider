@@ -75,7 +75,7 @@ public class Controller extends CtrController {
                     }
                     System.out.println("搜狗title: " + title);
                     int type = 1;
-                    if(Transmition.contentFilter(entry.getValue().split(";"),summary,summary,keyWord,new ArrayList<Integer>())) {
+                    if(Transmition.contentFilter(entry.getValue().split(";"),summary,title,keyWord,new ArrayList<Integer>())) {
                       Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
                       Transmition.transmit(article);
                     }
