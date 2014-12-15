@@ -56,11 +56,6 @@ public class Crawler {
                 e.printStackTrace();
             }
         }
-        /*String[] aaa = new String[1];
-        aaa[0]="李彦宏:1356969600000:1409587199999";
-        PropertiesUtil.loadFile("spiderConf.properties");
-        String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
-        crawl(aaa, sites);*/
     }
 
     public void crawl(String[] args,String[] sites){
