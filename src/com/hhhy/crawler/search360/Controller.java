@@ -75,7 +75,6 @@ public class Controller extends CtrController {
             String source = ele.select("h3").select("span").select("em").text();
             if(source==null)
                 source = website;
-            System.out.println("TIME IS :"+time);
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, source, FNum.get(0));
@@ -84,8 +83,5 @@ public class Controller extends CtrController {
             }
 
         }
-    }
-    public static void main(String[] args){
-        System.out.println(GetHTML.getHtml("http://news.so.com/ns?q=%E6%8A%95%E8%B5%84&src=newhome","utf-8"));
     }
 }

@@ -49,7 +49,6 @@ public class Controller extends CtrController{
                 System.out.println("没找到");
             }
             else{
-                System.out.println("size: "+lis.size());
                 ArrayList<Element> tableList = new ArrayList<Element>();
                 for(Element ele:lis){
                     tableList.add(ele);
@@ -75,17 +74,7 @@ public class Controller extends CtrController{
 
             String summary = li2.text();
             String content = Page.getContent(url,"div#text_content","utf-8");
-//            System.out.println("TIME IS :"+time);
-//            System.out.println("type:" + type);
-//            System.out.println("title:" + title);
-//            System.out.println("content:" + content);
-//            System.out.println("url:" + url);
-            System.out.println("time:" + time);
-//            System.out.println("summary:" + summary);
-//            System.out.println("website:" + website);
-//            System.out.println("----------------");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
-//            time="2014-8-31";
             long ctime = 0;
             try {
                 ctime = DateFormatUtils.getTime(time,"yyyy-MM-dd");
@@ -99,12 +88,8 @@ public class Controller extends CtrController{
             System.out.println("format: "+time+" today"+ today);
             if(!today.equals(time))continue;
 
-//            System.out.println("current: "+System.currentTimeMillis()+ " act: "+ctime);
             if(System.currentTimeMillis()-ctime>24*60*60*1000)continue;
             if(Transmition.contentFilter(words,summary, content, key, FNum)){
-//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                //调接口~~~~~
-//                System.out.println("send "+key+" "+title);
                 Article article = Transmition.getArticle(type, title, content, url, ctime, summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
             }

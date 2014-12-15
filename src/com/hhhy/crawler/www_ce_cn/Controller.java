@@ -77,14 +77,9 @@ public class Controller  extends CtrController{
 
             if(Transmition.contentFilter(words,summary,content,key,FNum) && Transmition.timeFilter(time)){
                 Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website,key, FNum.get(0));
                 Transmition.transmit(article);
             }
         }
-    }
-    public static void main(String[] args){
-        System.out.println(GetHTML.getHtml("http://www.so.com/s?q=" + "ghost"
-        + "&ie=gbk&src=zz_www_ce_cn&site=ce.cn&rg=1","utf-8"));
     }
 }

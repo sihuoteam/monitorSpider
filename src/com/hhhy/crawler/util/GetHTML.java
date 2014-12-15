@@ -9,9 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRouteParams;
-import org.apache.http.cookie.CookieSpecFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
@@ -23,7 +21,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,8 +111,7 @@ public class GetHTML {
         return httpGet;
     }
     private static HttpGet setHttpGet(String url,Map<String,String> headParams){
-        HttpGet httpGet = null;
-        httpGet = new HttpGet(url);
+        HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent",
                 "Mozilla/5.0 (Windows; U; Windows NT 5.2) Gecko/2008070208 Firefox/3.0.1");
         Iterator<Map.Entry<String,String>> iterator = headParams.entrySet().iterator();
@@ -185,6 +181,48 @@ public class GetHTML {
         }
         return charset;
     }
+
+    public static String getHtmlWithCookie(String url,org.apache.http.client.CookieStore cookieStore,String charSet, HashMap<String, String> headParams){
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        httpClient.setCookieStore(cookieStore);
+        HttpGet httpGet = setHttpGet(url,headParams);
+        String back = "";
+        try {
+            HttpResponse response = httpClient.execute(httpGet);
+            if (response != null) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) { // 2XX状态码
+                    HttpEntity entity = response.getEntity();
+                    String html ="";
+                    if(charSet.length()==0){
+                        InputStream eC = entity.getContent();
+                        String isStr = InputStreamUtils.inputStream2String(eC);
+                        charSet = getCharset(isStr);
+                        InputStream iss = new ByteArrayInputStream(isStr.getBytes());
+                        html = InputStreamUtils.inputStream2String(iss,charSet);
+                    }
+                    else{
+                        InputStream eC = entity.getContent();
+                        html = InputStreamUtils.inputStream2String(eC,charSet);
+                    }
+                    EntityUtils.consume(entity);
+                    if (html.contains("</html>")||html.contains("</HTML>")){
+                        System.out.println(url + " has got totally");
+                        back = html;
+                    } else
+                        back = "error";
+                }
+            }
+            else
+                back = "error";
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return back;
+    }
+
     public static String getHtml(String url,String charSet){
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = setHttpGet(url);

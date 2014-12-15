@@ -58,7 +58,6 @@ public class Controller extends CtrController {
                 for (Element ele : tables) {
                     tableList.add(ele);
                 }
-                System.out.println("搜索出" + tableList.size() + "个结果");
                 parsePages(tableList, entry);
             }
         }
@@ -77,15 +76,10 @@ public class Controller extends CtrController {
                     .text();
             timeS = FormatTime.getTime(timeS, "(\\d{4}\\.\\d{2}\\.\\d{2} \\d{2}:\\d{2}:\\d{2})", 1).replaceAll("\\.", "-");
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-            System.out.println("页面上找到时间timeS: " + timeS);
-            System.out.println("今天时间time: " + time2);
             if(!timeS.startsWith(time2)) continue;
-            System.out.println("确认是今天的timeS: " + timeS);
             long time = 0;
             try {
                 time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
-                System.out.println("转换格式的time: " + time);
-                System.out.println("现在时间time: " + System.currentTimeMillis());
             } catch (ParseException e) {
                 System.out.println(timeS);
             }
@@ -99,7 +93,6 @@ public class Controller extends CtrController {
             if(Transmition.contentFilter(words, summary, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
                 //调接口~~~~~
-                System.out.println("存储时间："+time);
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }

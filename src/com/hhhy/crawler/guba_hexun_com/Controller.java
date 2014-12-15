@@ -33,7 +33,6 @@ public class Controller extends CtrController {
             Map.Entry<String,String> entry = iterator.next();
             String transKey = "";
             String keyWord = entry.getKey().split(";")[0];
-            System.out.println("keyword:"+keyWord);
 			try {
 				transKey = URLEncoder.encode(keyWord, "gb2312");
 			} catch (UnsupportedEncodingException e) {
@@ -59,7 +58,6 @@ public class Controller extends CtrController {
 				for (Element ele : tableEles) {
 					tableList.add(ele);
 				}
-                System.out.println("搜索出" + tableList.size() + "个结果");
 				parsePages(tableList,entry);
 			}
 		}
@@ -79,7 +77,6 @@ public class Controller extends CtrController {
 //                    .select("h4").text(), "\\d+分钟前");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String timeContent = ele.select("div.ul_t").select("h4").text();
-            System.out.println("页面上找到时间timeS: " + timeContent);
             String timeS = FormatTime.getTime(timeContent, "\\d+分钟前");
 
             if(timeS == null || timeS.equals("")){
@@ -92,7 +89,6 @@ public class Controller extends CtrController {
             }
             long time = 0;
             if(timeS != null) {
-                System.out.println("页面上找到时间timeS: " + timeS);
                 if (timeS.contains("分钟前")) {
                     timeS = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss");
                 } else if (timeS.contains("小时前")) {
@@ -108,22 +104,15 @@ public class Controller extends CtrController {
                 }
 
                 String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-                System.out.println("今天时间time: " + time2);
                 if(!timeS.startsWith(time2))continue;
-                System.out.println("确认是今天的timeS: " + timeS);
-                System.out.println("time: " + timeS);
                 try {
                     time = DateFormatUtils.getTime(timeS, "yyyy-MM-dd HH:mm:ss");
-                    System.out.println("转换格式的time: " + time);
-                    System.out.println("现在时间time: " + System.currentTimeMillis());
                 } catch (ParseException e) {
                     System.out.println(timeS);
                 }
             }
 
 
-//            if (time == null || time.length() == 0 || time.contains("分钟前") || time.contains("小时前")	)
-//                time = FormatTime.getCurrentFormatTime().split(" ")[0];
             String summary = ele.select("div.cont").text();
             String url = ele.select("div.ul_t").select("h3")
                     .select("a").attr("href");
@@ -131,9 +120,7 @@ public class Controller extends CtrController {
                     "gb2312");
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, summary, content, key, FNum)){
-//                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                //调接口~~~~~
-                System.out.println("存储时间："+time);
+                Transmition.showDebug(type, title, content, url, ""+time, summary, website, FNum.get(0));
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);
             }

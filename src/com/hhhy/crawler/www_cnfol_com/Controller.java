@@ -88,16 +88,13 @@ public class Controller extends CtrController {
             if(ctime==0)continue;
             time  = DateFormatUtils.formatTime(ctime,"yyyy-MM-dd");
             String today = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-//            System.out.println("format: "+time+" today"+ today);
             if(!today.equals(time))continue;
-//            time = time==null?FormatTime.getTime(FormatTime.getCurrentFormatTime(), "(\\d{4}-\\d{2}-\\d{2})",1):time;
             String summary = ele.select("div").select("div.c-content")
                     .select("div.c-abstract").text();
             String url = ele.select("h3.c-title").select("a")
                     .attr("href");
             String content = Page.getContent(url, "div#__content",
                     "utf-8");
-//            System.out.println(key+"title:"+title+"time:"+time);
 
             ArrayList<Integer> FNum = new ArrayList<Integer>();
 

@@ -33,7 +33,6 @@ public class Controller extends CtrController {
     @Override
     public void parseBoard() {
         Iterator<Map.Entry<String,String>> iterator = Crawler.keyWords.entrySet().iterator();
-      System.out.println("kaishi");
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String keyWord = entry.getKey().split(";")[0];
@@ -54,37 +53,29 @@ public class Controller extends CtrController {
             } else {
                 for(Element ele:flag){
                     String url = ele.select("h3").select("a").attr("href");
-                  String title = ele.select("h3").select("a").text();
-                  String src = ele.select("cite").text();
-                  String summary =ele.select(".thumb_news").text();
-                  if(title.contains(keyWord) || summary.contains(keyWord)) {
-//                    System.out.println(entry.getKey().split(";")[0] + "url: " + url + ", title: " + title + ", src: " + src + ", summary: " + summary);
-                    if (src.length() < 16) continue;
-                    String source = ele.select("cite").attr("title");
-                    System.out.println("source: "+source+" "+keyWord);
-                    String time = src.substring(src.length() - 16);
-                    String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-                    if (!time.startsWith(time2)) continue;
-//                    System.out.println("time: " + time);
-                    long ctime = 0;
-                    try {
-                      ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm");
-                    } catch (ParseException e) {
-                      e.printStackTrace();
-                      continue;
+                    String title = ele.select("h3").select("a").text();
+                    String src = ele.select("cite").text();
+                    String summary =ele.select(".thumb_news").text();
+                    if(title.contains(keyWord) || summary.contains(keyWord)) {
+                        if (src.length() < 16) continue;
+                        String source = ele.select("cite").attr("title");
+                        String time = src.substring(src.length() - 16);
+                        String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
+                        if (!time.startsWith(time2)) continue;
+                        long ctime = 0;
+                        try {
+                          ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd hh:mm");
+                        } catch (ParseException e) {
+                          e.printStackTrace();
+                          continue;
+                        }
+                        int type = 1;
+                        Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
+                        Transmition.transmit(article);
                     }
-                    System.out.println("搜狗title: " + title);
-                    int type = 1;
-                    if(Transmition.contentFilter(entry.getValue().split(";"),summary,title,keyWord,new ArrayList<Integer>())) {
-                      Article article = Transmition.getArticle(type, title, summary, url, ctime, summary, source, keyWord, 1);
-                      Transmition.transmit(article);
-                    }
-                  }
                 }
-//                parsePages(tableList,entry);
             }
         }
-      System.out.println("************************8");
     }
 
     @Override

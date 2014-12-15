@@ -34,7 +34,6 @@ public class Controller extends CtrController {
         while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String keyWord = entry.getKey().split(";")[0];
-            System.out.println("keyword:"+keyWord);
             String transKey = "";
             try {
                 transKey = URLEncoder.encode(keyWord, "gb2312");
@@ -51,16 +50,13 @@ public class Controller extends CtrController {
             Elements flag = document.select("tr.bg");
             if(flag.size()==0){
                 //TODO ??
-                System.out.println("nothing to found.....");
             }
             else{
-                System.out.println("found");
                 Elements tableEles =  document.select("tr.bg");
                 ArrayList<Element> tableList = new ArrayList<Element>();
                 for(Element ele:tableEles){
                     tableList.add(ele);
                 }
-                System.out.println("搜索出" + tableList.size() + "个结果");
                 parsePages(tableList,entry);
             }
         }
@@ -76,19 +72,13 @@ public class Controller extends CtrController {
             String title = ele.select("td.f14").select("a").text();
             String timeS = "20"+ele.select("td").last().select("p").text()+":00";
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
-            System.out.println("页面上找到时间timeS: " + timeS);
-            System.out.println("今天时间time: " + time2);
             if(!timeS.startsWith(time2))continue;
-            System.out.println("确认是今天的timeS: " + timeS);
             long time = 0;
             try {
                 time = DateFormatUtils.getTime(timeS, "yy-MM-dd HH:mm");
-                System.out.println("转换格式的time: " + time);
-                System.out.println("现在时间time: " + System.currentTimeMillis());
             } catch (ParseException e) {
                 System.out.println(timeS);
             }
-//            String time = "20"+ele.select("td").last().select("p").text().substring(0,8);
             String summary = "";
             String url = ele.select("td.f14").select("a").attr("href");
             String content ="";
@@ -101,7 +91,6 @@ public class Controller extends CtrController {
             ArrayList<Integer> FNum = new ArrayList<Integer>();
             if(Transmition.contentFilter(words, summary, content, key, FNum)){
 //                Transmition.showDebug(type, title, content, url, time, summary, website, FNum.get(0));
-                System.out.println("存储时间："+time);
                 //调接口~~~~~
                 Article article = Transmition.getArticle(type, title, content, url, time, summary, website, key, FNum.get(0));
                 Transmition.transmit(article);

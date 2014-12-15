@@ -54,7 +54,6 @@ public class Controller extends CtrController {
 				for (Element ele : tableEles) {
 					tableList.add(ele);
 				}
-				System.out.println(tableEles.size());
 				parsePages(tableList,entry);
 			}
 		}

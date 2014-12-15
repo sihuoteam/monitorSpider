@@ -34,7 +34,6 @@ public class Controller extends CtrController {
     	while(iterator.hasNext()){
             Map.Entry<String,String> entry = iterator.next();
             String keyWord = entry.getKey().split(";")[0];
-            System.out.println("keyword："+keyWord);
     		String transKey = "";
     		try {
     			transKey = URLEncoder.encode(keyWord, "utf-8");
@@ -61,7 +60,6 @@ public class Controller extends CtrController {
     			for(Element ele:tableEles){
     				tableList.add(ele);
     			}
-                System.out.println("找到页面上的size："+tableEles.size());
     			parsePages(tableList,entry);
     		}
     	}

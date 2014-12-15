@@ -123,7 +123,6 @@ public class Crawler {
                             e.printStackTrace();
                             continue;
                         }
-                        System.out.println("baidu::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
 
                         if(ctime>=beginTime && ctime<=endTime){
                             if(!additionWord.equals("")){
@@ -205,7 +204,6 @@ public class Crawler {
                             continue;
                         }
                         int type = 1;
-                        System.out.println("sougou::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
 
                         if(ctime>=beginTime && ctime<=endTime){
                             if(!additionWord.equals("")){
@@ -296,7 +294,6 @@ public class Crawler {
                     String summary = ele.select("p").text();
                     String url = ele.select("div.newsList").select("td").select("div.T1").select("a").attr("href");
                     if(url.contains("http")){
-                        System.out.println("chinaso::::"+"ctime:"+ctime+"  "+title.contains(keyWord)+" "+summary.contains(keyWord)+"title:"+title+"keyword:"+keyWord+"summary:"+summary);
 
                         if(ctime>=beginTime && ctime<=endTime){
                             if(!additionWord.equals("")){
@@ -351,8 +348,6 @@ public class Crawler {
     	        /*
     	        搜索关键词是否存在
     	         */
-
-
             Elements flag = document.select("ul#news").select("li");
             if(flag.size()==0){
                 //TODO ??
@@ -378,7 +373,6 @@ public class Crawler {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    System.out.println("360::::" + "ctime:" + ctime + "  " + title.contains(keyWord) + " " + summary.contains(keyWord) + "title:" + title + "keyword:" + keyWord + "summary:" + summary);
 
                     if(ctime>=beginTime && ctime<=endTime){
                         if(!additionWord.equals("")){
@@ -413,8 +407,5 @@ public class Crawler {
             else
                 break;
         }
-    }
-    public static void main(String[] args) throws ParseException {
-      new Crawler();
     }
 }

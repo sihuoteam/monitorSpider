@@ -45,7 +45,6 @@ public class Transmition {
             else
                 return false;
         }
-
     }
     public static boolean timeFilter(String time){
         if(time==null)
@@ -56,7 +55,7 @@ public class Transmition {
     }
 	public static void showDebug(int type, String title, String content,
 			String url, String time, String summary, String website, int findNum) {
-		boolean debug = true;
+		boolean debug = false;
 		if (debug) {
 			System.out.println("type:" + type);
 			System.out.println("title:" + title);
@@ -114,7 +113,6 @@ public class Transmition {
             }
 			String jsonArticleStr = JsonUtils.toJson(article);
 
-             MyLog.logINFO(jsonArticleStr);
 			try {
 				ThriftClient client = ThriftClient.getInstance();
 				client.addArticle(jsonArticleStr);

@@ -1,20 +1,18 @@
 package com.hhhy.crawler;
 
-import java.util.*;
-
 import com.hhhy.crawler.commenSpider.CommenSpider;
 import com.hhhy.crawler.util.JsonUtils;
+import com.hhhy.crawler.util.PropertiesUtil;
+import com.hhhy.web.client.thrift.ThriftClient;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
-import com.hhhy.crawler.util.MyLog;
-import com.hhhy.crawler.util.PropertiesUtil;
-import com.hhhy.web.client.thrift.ThriftClient;
+import java.util.*;
 
 public class Crawler extends TimerTask {
 	static {
 		try {
-			ThriftClient.init("10.1.44.122", 12306);
+			ThriftClient.init("localhost", 12306);
 		} catch (TTransportException e) {
 			e.printStackTrace();
 		}
@@ -29,8 +27,6 @@ public class Crawler extends TimerTask {
             try {
                 keyWords =  (HashMap<String,String>) JsonUtils.fromJson(client.getKeywords(), HashMap.class);
                 newSites = client.getUrls();
-                MyLog.logINFO("keyWords has been set again......");
-                MyLog.logINFO("keyWords is :"+keyWords);
             } catch (TException e) {
                 e.printStackTrace();
             }
@@ -60,9 +56,6 @@ public class Crawler extends TimerTask {
             }
         }
         int blankTime = keyWords.size()*30*3000;
-        MyLog.logINFO("keywords:"+keyWords);
-
-        MyLog.logINFO("blankTime:"+blankTime);
 		if(crawlList.size()==0){
 			for(String webName:webs){
 				Timer timer = new Timer();
@@ -93,7 +86,7 @@ public class Crawler extends TimerTask {
 		Timer timer = new Timer();
 		timer.schedule(crawler, 0, 24 * 60 * 60 * 1000);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(8000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
