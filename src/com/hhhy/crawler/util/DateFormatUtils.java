@@ -3,6 +3,8 @@ package com.hhhy.crawler.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -25,10 +27,12 @@ public class DateFormatUtils {
     }
     
     public static long getTime(String date, String pattern) throws ParseException{
+
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern(pattern);
         return sdf.parse(date).getTime();
     }
+
 
     /**
      * @param args

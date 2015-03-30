@@ -103,4 +103,8 @@ public class Controller extends CtrController {
             }
         }
     }
+
+    public static void main(String[] args){
+
+    }
 }

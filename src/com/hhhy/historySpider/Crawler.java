@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.security.auth.login.Configuration;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 public class Crawler {
 
     public Crawler(){
-        ThriftClient client = ThriftClient.getInstance();
+        /*ThriftClient client = ThriftClient.getInstance();
 
         String str = null;
         try {
@@ -55,7 +56,7 @@ public class Crawler {
             } catch (TException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public void crawl(String[] args,String[] sites){
@@ -107,13 +108,19 @@ public class Crawler {
 
 
                     if(title.contains(keyWord) || summary.contains(keyWord)) {
-                        if (src.length() < 19) continue;
-                        String time = src.substring(src.length() - 19);
                         String source = src.substring(0,src.length() - 19).trim();
+
+
                         int type = 1;
                         long ctime = 0;
                         try {
-                            ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd HH:mm:ss");
+                            Pattern p = Pattern.compile("(\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2})");
+
+                            Matcher matcher = p.matcher(src);
+                            if(matcher.find()){
+                                src = matcher.group(1)+"-"+matcher.group(2)+"-"+matcher.group(3)+" "+matcher.group(4)+":"+matcher.group(5)+":00";
+                            }
+                            ctime = DateFormatUtils.getTime(src, "yyyy-MM-dd HH:mm:ss");
                         } catch (ParseException e) {
                             e.printStackTrace();
                             continue;
@@ -336,8 +343,8 @@ public class Crawler {
         boolean ff = true;
         while(ff){
             pn++;
-            String html = GetHTML.getHtml("http://news.so.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn="+pn, "utf-8");
-
+            //String html = GetHTML.getHtml("http://news.so.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn="+pn, "utf-8");
+            String html = GetHTML.getHtml("http://news.haosou.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn="+pn, "utf-8");
             html = html.replaceAll("&nbsp;","");
             Document document = Jsoup.parse(html);
     	        /*
@@ -354,14 +361,15 @@ public class Crawler {
                 String website = "360搜索";
                 for(Element ele:flag){
                     String title = ele.select("h3").select("a").text();
-                    String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"), "(\\d+-\\d+-\\d+)", 1);
+                    String time = FormatTime.getTime(ele.select("p.newsinfo").select("span.posttime").attr("title"), "(\\d+-\\d+-\\d+)", 1);
                     String summary = ele.select("p").text();
                     String url = ele.select("h3").select("a").attr("href");
                     String source = ele.select("h3").select("span").select("em").text();
                     if(source==null)
                         source=website;
-                    if(time==null)
+                    if(time==null){
                         continue;
+                    }
                     long ctime = 0;
                     try {
                         ctime = DateFormatUtils.getTime(time,DateFormatUtils.yyyyMMdd);
@@ -403,4 +411,14 @@ public class Crawler {
                 break;
         }
     }
+
+   /* public static void main(String[] args){
+        Crawler crawler = new Crawler();
+        PropertiesUtil.loadFile("spiderConf.properties");
+        String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
+        for(String site:sites){
+            System.out.println("lala"+site);
+            crawler.parseBoard360("恐龙","",site,0,0);
+        }
+    }*/
 }
