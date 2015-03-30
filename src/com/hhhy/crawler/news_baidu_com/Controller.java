@@ -44,8 +44,8 @@ public class Controller extends CtrController {
       } catch (UnsupportedEncodingException e) {
         e.printStackTrace();
       }
-      String html = GetHTML.getHtml("http://news.baidu.com/ns?word="+transKey+"&tn=news&from=news&cl=2&rn=20&ct=0&clk=sortbytime","utf-8");
-      html = html.replaceAll("&nbsp;", "");
+        String html = GetHTML.getHtml("http://news.baidu.com/ns?ct=0&rn=50&ie=utf-8&bs="+transKey+"&rsv_bp=1&sr=0&cl=2&f=8&prevct=no&tn=news&word="+transKey+"&rsv_sug3=1&rsv_sug4=104&rsv_sug1=1&rsv_sug=1","utf-8");
+        html = html.replaceAll("&nbsp;", "");
 
       Document document = Jsoup.parse(html);
 
@@ -61,16 +61,16 @@ public class Controller extends CtrController {
           String src = ele.select(".c-author").text();
           String summary =ele.select(".c-summary").text();
           if(title.contains(keyWord) || summary.contains(keyWord)) {
-              Pattern p = Pattern.compile("(\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2})");
-              String time;
+              Pattern p = Pattern.compile("((\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2}).*)");
+              String time,source=src;
 
               Matcher matcher = p.matcher(src);
               if(matcher.find()){
-                  time = matcher.group(1)+"-"+matcher.group(2)+"-"+matcher.group(3)+" "+matcher.group(4)+":"+matcher.group(5)+":00";
+                  time = matcher.group(2)+"-"+matcher.group(3)+"-"+matcher.group(4)+" "+matcher.group(5)+":"+matcher.group(6)+":00";
+                  source = source.replace(matcher.group(1),"");
               } else{
                   continue;
               }
-            String source = src.substring(0,src.length() - 19).trim();
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
             if(!time.startsWith(time2))continue;
             int type = 1;
