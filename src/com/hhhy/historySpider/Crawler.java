@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class Crawler {
 
     public Crawler() {
-        ThriftClient client = ThriftClient.getInstance();
+        /*ThriftClient client = ThriftClient.getInstance();
 
         String str = null;
         try {
@@ -53,7 +53,7 @@ public class Crawler {
             } catch (TException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public void crawl(String[] args, String[] sites) {
@@ -172,7 +172,8 @@ public class Crawler {
     public void parseBoardSougou(String keyWord, String additionWord, String site, long beginTime, long endTime) {
         String transKey = "";
         try {
-            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "UTF-8");
+//            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "UTF-8");
+            transKey = URLEncoder.encode(keyWord + " " + additionWord, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -252,7 +253,8 @@ public class Crawler {
     public void parseChinaso(String keyWord, String additionWord, String site, long beginTime, long endTime) {
         String transKey = "";
         try {
-            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "gb2312");
+            transKey = URLEncoder.encode(keyWord + " " + additionWord, "gb2312");
+//            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "gb2312");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -339,7 +341,8 @@ public class Crawler {
     public void parseBoard360(String keyWord, String additionWord, String site, long beginTime, long endTime) {
         String transKey = "";
         try {
-            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "gb2312");
+            transKey = URLEncoder.encode(keyWord + " " + additionWord, "gb2312");
+//            transKey = URLEncoder.encode(keyWord + " " + additionWord + " site:" + site, "gb2312");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -414,10 +417,10 @@ public class Crawler {
         }
     }
 
-    /*public static void main(String[] args){
+    public static void main(String[] args){
         Crawler crawler = new Crawler();
         PropertiesUtil.loadFile("spiderConf.properties");
         String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
-            crawler.parseBoardBaidu("先锋电子","","",1425139200000L,1427731199999L);
-    }*/
+            crawler.parseChinaso("先锋电子","","",1425139200000L,1427731199999L);
+    }
 }
