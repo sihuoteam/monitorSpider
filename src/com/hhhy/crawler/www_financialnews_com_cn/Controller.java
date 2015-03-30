@@ -52,7 +52,7 @@ public class Controller extends CtrController{
         for (Element li : (ArrayList<Element>) tableList) {
             String title = li.select("div").first().text();
 
-            String time = FormatTime.getTime(li.select("div").text(), "(\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2}", 1);
+            String time = FormatTime.getTime(li.select("div").text(), "(\\d{4}\\.\\d{2}\\.\\d{2}\\s\\d{2}:\\d{2}:\\d{2})", 1);
             String summary = li.select("div").last().text();
             String url = li.select("div").first().select("a").attr("href");
             String content = Page.getContent(url, "div.TRS_Editor", "utf-8");

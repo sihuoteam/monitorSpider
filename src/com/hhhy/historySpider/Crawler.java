@@ -73,13 +73,22 @@ public class Crawler {
                 parseChinaso(keyWord,additionWord,site,beginTime,endTime);
                 parseBoard360(keyWord,additionWord,site,beginTime,endTime);
             }
+            //百度的全量爬取
+            String keyWord = arg.split(":")[0];
+            String additionWord = arg.split(":")[1];
+            long beginTime = Long.parseLong(arg.split(":")[2]);
+            long endTime = Long.parseLong(arg.split(":")[3]);
+            parseBoardBaidu(keyWord,additionWord,"", beginTime, endTime);
         }
     }
 
     public void parseBoardBaidu(String keyWord, String additionWord,String site,long beginTime,long endTime) {
         String transKey = "";
         try {
-            transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site,"UTF-8");
+            if(site.length()!=0)
+                transKey = URLEncoder.encode(keyWord+" "+additionWord+" site:"+site,"UTF-8");
+            else
+                transKey = URLEncoder.encode(keyWord+" "+additionWord,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -88,8 +97,8 @@ public class Crawler {
 
         boolean ff = true;
         while(ff){
-            pn+=50;
-            String html = GetHTML.getHtml("http://news.baidu.com/ns?word="+transKey+"&bt=0&cl=2&ct=0&et=0&ie=utf-8&pn="+pn+"&rn=50&tn=news","utf-8");
+
+            String html = GetHTML.getHtml("http://news.baidu.com/ns?ct=0&pn="+pn+"&rn=50&ie=utf-8&bs="+transKey+"&rsv_bp=1&sr=0&cl=2&f=8&prevct=no&tn=news&word="+transKey+"&rsv_sug3=1&rsv_sug4=104&rsv_sug1=1&rsv_sug=1","utf-8");
             html = html.replaceAll("&nbsp;", "");
             Document document = Jsoup.parse(html);
 
@@ -108,17 +117,17 @@ public class Crawler {
 
 
                     if(title.contains(keyWord) || summary.contains(keyWord)) {
-                        String source = src.substring(0,src.length() - 19).trim();
-
+                        String source = src;
 
                         int type = 1;
                         long ctime = 0;
                         try {
-                            Pattern p = Pattern.compile("(\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2})");
+                            Pattern p = Pattern.compile("((\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2}).*)");
 
                             Matcher matcher = p.matcher(src);
                             if(matcher.find()){
-                                src = matcher.group(1)+"-"+matcher.group(2)+"-"+matcher.group(3)+" "+matcher.group(4)+":"+matcher.group(5)+":00";
+                                src = matcher.group(2)+"-"+matcher.group(3)+"-"+matcher.group(4)+" "+matcher.group(5)+":"+matcher.group(6)+":00";
+                                source = source.replace(matcher.group(1),"");
                             }
                             ctime = DateFormatUtils.getTime(src, "yyyy-MM-dd HH:mm:ss");
                         } catch (ParseException e) {
@@ -159,7 +168,7 @@ public class Crawler {
             }
             else
                 break;
-
+            pn+=20;
         }
     }
     public void parseBoardSougou(String keyWord,String additionWord,String site,long beginTime,long endTime) {
@@ -343,7 +352,6 @@ public class Crawler {
         boolean ff = true;
         while(ff){
             pn++;
-            //String html = GetHTML.getHtml("http://news.so.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn="+pn, "utf-8");
             String html = GetHTML.getHtml("http://news.haosou.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn="+pn, "utf-8");
             html = html.replaceAll("&nbsp;","");
             Document document = Jsoup.parse(html);
@@ -412,13 +420,10 @@ public class Crawler {
         }
     }
 
-   /* public static void main(String[] args){
+    /*public static void main(String[] args){
         Crawler crawler = new Crawler();
         PropertiesUtil.loadFile("spiderConf.properties");
         String[] sites = PropertiesUtil.getPropertyValue("historyNames").split(";");
-        for(String site:sites){
-            System.out.println("lala"+site);
-            crawler.parseBoard360("恐龙","",site,0,0);
-        }
+            crawler.parseBoardBaidu("先锋电子","","",1425139200000L,1427731199999L);
     }*/
 }

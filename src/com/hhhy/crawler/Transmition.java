@@ -99,7 +99,7 @@ public class Transmition {
 				&& article.getSummary().length() > 0
 				&& article.getTitle().length() > 0
 				&& article.getUrl().length() > 0) {
-            if(urlFilter.contains(article.getUrl()) || titleFilter.contains(article.getTitle())){
+            /*if(urlFilter.contains(article.getUrl()) || titleFilter.contains(article.getTitle())){
                 return;
             }else{
                 urlFilter.add(article.getUrl());
@@ -110,7 +110,7 @@ public class Transmition {
                 urlFilter.clear();
                 titleFilter.clear();
                 lastUpdate = System.currentTimeMillis();
-            }
+            }*/
 			String jsonArticleStr = JsonUtils.toJson(article);
 
 			try {
