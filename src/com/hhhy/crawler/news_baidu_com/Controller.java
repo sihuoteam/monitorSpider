@@ -14,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Ghost on 2014/8/28 0028.
@@ -59,14 +61,22 @@ public class Controller extends CtrController {
           String src = ele.select(".c-author").text();
           String summary =ele.select(".c-summary").text();
           if(title.contains(keyWord) || summary.contains(keyWord)) {
-            if (src.length() < 19) continue;
-            String time = src.substring(src.length() - 19);
+              Pattern p = Pattern.compile("(\\d{4}).*(\\d{2}).*(\\d{2}).*(\\d{2}):(\\d{2})");
+              String time;
+
+              Matcher matcher = p.matcher(src);
+              if(matcher.find()){
+                  time = matcher.group(1)+"-"+matcher.group(2)+"-"+matcher.group(3)+" "+matcher.group(4)+":"+matcher.group(5)+":00";
+              } else{
+                  continue;
+              }
             String source = src.substring(0,src.length() - 19).trim();
             String time2 = DateFormatUtils.formatTime(System.currentTimeMillis(), "yyyy-MM-dd");
             if(!time.startsWith(time2))continue;
             int type = 1;
             long ctime = 0;
             try {
+
               ctime = DateFormatUtils.getTime(time, "yyyy-MM-dd HH:mm:ss");
             } catch (ParseException e) {
               e.printStackTrace();

@@ -36,7 +36,7 @@ public class Controller extends CtrController {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            String html = GetHTML.getHtml("http://news.so.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn=1", "utf-8");
+            String html = GetHTML.getHtml("http://news.haosou.com/ns?j=0&rank=pdate&src=srp&q="+transKey+"&pn=1", "utf-8");
 
             html = html.replaceAll("&nbsp;","");
             Document document = Jsoup.parse(html);
@@ -66,7 +66,8 @@ public class Controller extends CtrController {
         String website = "360搜索";
         for(Element ele:(ArrayList<Element>)tableList){
             String title = ele.select("h3").select("a").text();
-            String time = FormatTime.getTime(ele.select("h3").select("span").attr("title"),"(\\d+-\\d+-\\d+)",1);
+            String time = FormatTime.getTime(ele.select("p.newsinfo").select("span.posttime").attr("title"), "(\\d+-\\d+-\\d+)", 1);
+
             if(time==null)
                 continue;
             String summary = ele.select("p").text();

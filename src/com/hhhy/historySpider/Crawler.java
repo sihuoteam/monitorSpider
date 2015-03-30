@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class Crawler {
 
     public Crawler(){
-        /*ThriftClient client = ThriftClient.getInstance();
+        ThriftClient client = ThriftClient.getInstance();
 
         String str = null;
         try {
@@ -56,7 +56,7 @@ public class Crawler {
             } catch (TException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 
     public void crawl(String[] args,String[] sites){
